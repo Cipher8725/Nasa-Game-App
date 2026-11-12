@@ -1,7 +1,11 @@
 extends Node
 
 ## Test de interacción: comprueba que el jugador detecta las consolas cercanas
-## (Area3D ↔ Area3D) y que la acción "interact" repara el recurso correcto.
+## (Area3D ↔ Area3D) y que la acción "interact" lanza el minijuego de
+## reparación del recurso correspondiente.
+##
+## El oxígeno y la energía se reparan mediante minijuego; el agua, que aún no
+## tiene minijuego, se repara al instante.
 
 func _ready() -> void:
 	await get_tree().process_frame
@@ -18,8 +22,10 @@ func _run() -> void:
 
 	var main_scene: Node = get_tree().current_scene.get_node_or_null("Main")
 	var player: HabitatPlayer = main_scene.get_node_or_null("Player") as HabitatPlayer
+	var manager: RepairMinigameManager = get_tree().get_first_node_in_group("repair_minigames") as RepairMinigameManager
 	failures += _check("Jugador instanciado", player != null)
-	if player == null:
+	failures += _check("Gestor de minijuegos disponible", manager != null)
+	if player == null or manager == null:
 		get_tree().quit(1)
 		return
 
@@ -52,7 +58,7 @@ func _run() -> void:
 			break
 	failures += _check("El jugador detecta la consola cercana", detected)
 
-	# --- Reparación mediante la acción "interact" ---
+	# --- Interacción con una consola de minijuego (oxígeno) ---
 	# Se simula la pulsación de la tecla de interacción.
 	var input_event: InputEventKey = InputEventKey.new()
 	input_event.physical_keycode = KEY_E
@@ -62,12 +68,51 @@ func _run() -> void:
 	for _i: int in range(10):
 		await get_tree().process_frame
 
+	failures += _check("La interacción abre el minijuego", manager.is_open())
+	failures += _check("El minijuego abierto es el de oxígeno",
+		manager.get_active_minigame() is OxygenRepairMinigame)
+	failures += _check("El control del jugador se bloquea", not player.is_input_enabled())
+	failures += _check("El recurso no se repara al abrir el minijuego",
+		is_equal_approx(game.get_resource_level(GameManager.RESOURCE_OXYGEN), level_before))
+
+	# Se completa el minijuego para comprobar que repara el recurso.
+	var minigame: OxygenRepairMinigame = manager.get_active_minigame() as OxygenRepairMinigame
+	if minigame != null:
+		minigame.result_display_time = 0.05
+		while minigame.is_running() and minigame.get_progress() < 1.0:
+			minigame.set_needle(minigame.get_target_center())
+			minigame.press_button()
+			await get_tree().process_frame
+		await get_tree().create_timer(0.4).timeout
+
 	var level_after: float = game.get_resource_level(GameManager.RESOURCE_OXYGEN)
-	failures += _check("La reparación aumenta el recurso (%.0f -> %.0f)" % [level_before, level_after], level_after > level_before)
+	failures += _check("Completar el minijuego repara el recurso (%.0f -> %.0f)" % [level_before, level_after], level_after > level_before)
+	failures += _check("El minijuego se cierra al terminar", not manager.is_open())
 
 	# Se comprueba que el recurso reparado es el de la consola, no otro.
 	var energy_level: float = game.get_resource_level(GameManager.RESOURCE_ENERGY)
 	failures += _check("La reparación no afecta a otros recursos", is_equal_approx(energy_level, 100.0))
+
+	# --- Consola sin minijuego (agua): se repara al instante ---
+	var water_console: ResourceConsole = null
+	for node: Node in main_scene.get_node("Habitat").get_children():
+		var console: ResourceConsole = node as ResourceConsole
+		if console != null and console.resource_type == GameManager.RESOURCE_WATER:
+			water_console = console
+			break
+	failures += _check("Consola de agua encontrada", water_console != null)
+	if water_console != null:
+		game.consume_resource(GameManager.RESOURCE_WATER, 40.0)
+		var water_before: float = game.get_resource_level(GameManager.RESOURCE_WATER)
+		player.global_position = water_console.global_position + Vector3(0, 0, 1.2)
+		for _i: int in range(30):
+			await get_tree().process_frame
+		Input.parse_input_event(input_event)
+		for _i: int in range(10):
+			await get_tree().process_frame
+		failures += _check("El agua se repara al instante (sin minijuego)",
+			game.get_resource_level(GameManager.RESOURCE_WATER) > water_before)
+		failures += _check("El agua no abre ningún minijuego", not manager.is_open())
 
 	# --- Salida del área ---
 	player.global_position = Vector3(0, 0, 6)

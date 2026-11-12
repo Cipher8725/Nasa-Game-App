@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="4_hud"]
 [ext_resource type="PackedScene" path="res://scenes/emergency_system.tscn" id="5_emergency"]
+[ext_resource type="Script" path="res://scripts/repair_minigame_manager.gd" id="6_minigames"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_controller")
@@ -20,3 +21,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="HUD" parent="UILayer" instance=ExtResource("4_hud")]
+
+; Capa de los minijuegos de reparación (por encima del HUD).
+[node name="RepairMinigames" type="CanvasLayer" parent="." groups=["repair_minigames"]]
+layer = 10
+script = ExtResource("6_minigames")

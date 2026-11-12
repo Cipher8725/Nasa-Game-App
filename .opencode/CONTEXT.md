@@ -137,6 +137,41 @@ sistemas.
   `tools/check_assets.sh`; `.gitignore` excluye los 3 packs por licencia y
   tamaño; `docs/ASSETS.md` y `ai_assets/LICENSES.md` actualizados.
 
+### Hito 6 — Minijuegos de reparación (oxígeno y energía) (2026-11-12)
+
+- Las reparaciones de **oxígeno y energía ya no son instantáneas**: al pulsar
+  `E` en su consola se abre un **minijuego** con cuenta atrás. El agua y la
+  estructura se siguen reparando al instante (aún sin minijuego).
+- **Minijuego del oxígeno** (`scenes/ui/minigame_oxygen.tscn`): una aguja
+  recorre una barra de presión y hay que **pulsar el botón** (ratón o ESPACIO)
+  mientras la aguja está dentro de la zona verde. Acierto = +presión y +tiempo;
+  fallo = −presión y −tiempo. La zona se estrecha al avanzar.
+- **Minijuego de energía** (`scenes/ui/minigame_cables.tscn`): hay que
+  **conectar 4 cables** con su conector (misma letra, conectores barajados).
+  Una conexión incorrecta penaliza el tiempo y la presión. Las líneas
+  conectadas se dibujan con `scripts/cable_wire_layer.gd`.
+- **Arquitectura**:
+  - `scripts/repair_minigame.gd` (`RepairMinigame`) es la base común:
+    temporizador, progreso, resultado y puntos de extensión `_setup()`,
+    `_update_visuals()` y `_handle_action_input()`.
+  - `scripts/repair_minigame_manager.gd` (`RepairMinigameManager`, un
+    `CanvasLayer` en el grupo `repair_minigames`) abre el minijuego que
+    corresponde a cada recurso, bloquea el control del jugador y aplica la
+    reparación en el `GameManager` al terminar.
+  - El registro de minijuegos vive en `_scene_for()`: para añadir uno nuevo
+    (agua, estructura, o mover las consolas cuando se amplíe el mapa) basta
+    con registrar su escena y su script.
+- **Jugador**: `set_input_enabled()` bloquea movimiento, salto e interacción
+  mientras hay un minijuego abierto y libera el ratón (`MOUSE_MODE_VISIBLE`).
+  Escape cancela la reparación; `R` no reinicia la misión con un minijuego
+  abierto.
+- **Grupos usados**: `player`, `mission_hud` y `repair_minigames`. Ojo: en
+  Godot 4 los grupos van en la **cabecera del nodo**
+  (`[node name="X" type="Y" groups=["grupo"]]`), no como propiedad aparte.
+- **Tests**: nuevo `tests/minigame_test.tscn` (mecánica de ambos minijuegos +
+  integración con la consola) y `tests/interaction_test.gd` reescrito para el
+  nuevo flujo. Suite completa: 6 pruebas, todas en verde.
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -153,8 +188,10 @@ scenes/main.tscn  (Node3D + mission_controller.gd)
 │   └── SpaceBackdrop   → planeta Verdant World + asteroide
 ├── Player        → instancia de scenes/player.tscn (CharacterBody3D)
 ├── EmergencySystem → instancia de scenes/emergency_system.tscn (Node + Timer)
-└── UILayer (CanvasLayer)
-    └── HUD       → instancia de scenes/hud.tscn (Control)
+├── UILayer (CanvasLayer)
+│   └── HUD       → instancia de scenes/hud.tscn (Control)
+└── RepairMinigames (CanvasLayer, layer 10)
+    └── (minijuego abierto) → scenes/ui/minigame_oxygen.tscn | minigame_cables.tscn
 ```
 
 ### Patrón de acceso al estado global
@@ -249,20 +286,26 @@ existe en 4.7.2).
 9. **Estadísticas de sesión**: tiempo total y misiones completadas, ya
    disponibles vía `get_missions_completed()`.
 10. **Exportación**: crear `export_presets.cfg` para Windows/Linux.
+11. **Minijuegos de agua y estructura**: replicar el patrón de oxígeno y
+    energía cuando el arquitecto amplíe el mapa e indique las ubicaciones
+    exactas de las nuevas consolas (o de los paneles de repairing).
 
 ### Deuda técnica conocida
 
-11. `scripts/mission_hud.gd` actualiza cronómetro y puntuación cada fotograma en
+12. `scripts/mission_hud.gd` actualiza cronómetro y puntuación cada fotograma en
     `_process`. Es aceptable, pero puede pasar a 10 Hz igual que los recursos.
-12. La skill `godot-console` menciona `--check-only` con `--script`; ese modo no
+13. La skill `godot-console` menciona `--check-only` con `--script`; ese modo no
     registra Autoloads, así que solo sirve para scripts sin dependencias de
     Autoload (o usando `get_instance()`).
-13. Los `.glb` de Molten Maps referencian sus texturas PNG por UID: **cada
+14. Los `.glb` de Molten Maps referencian sus texturas PNG por UID: **cada
     `.glb` debe permanecer junto a su PNG** (mismo nombre base). Por eso los
     packs se usan completos desde `assets/` y no se copian archivos sueltos.
-14. Los tres packs de `assets/` **no están en Git** (licencias y ~136 MB). Al
+15. Los tres packs de `assets/` **no están en Git** (licencias y ~136 MB). Al
     clonar hay que colocarlos y ejecutar `bash tools/check_assets.sh` antes de
     importar; sin ellos las escenas no cargan.
+16. Los minijuegos son deliberadamente sencillos (el arquitecto los mejorará
+    después): el de oxígeno solo mide pulsaciones y el de cables solo 4
+    conexiones fijas. La dificultad está en los `@export` de cada script.
 
 ## 5. ¿Cómo hay que hacerlo?
 
@@ -299,6 +342,7 @@ $root  = "H:\GodotProyects\GodotProyects 4.7.2\na-sa-game"
 & $godot --headless --path $root --quit-after 20000 "res://tests/simulation_test.tscn"
 & $godot --headless --path $root --quit-after 2000  "res://tests/asset_collision_test.tscn"
 & $godot --headless --path $root --quit-after 2000  "res://tests/physics_test.tscn"
+& $godot --headless --path $root --quit-after 20000 "res://tests/minigame_test.tscn"
 
 # 3. Juego principal
 & $godot --headless --path $root --quit-after 5
@@ -348,4 +392,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 5 (estación espacial con los 3 packs in situ, cubo gris, ventanal y test de física) completado.*
+*Actualizado: 2026-11-12 — Hito 6 (minijuegos de reparación de oxígeno y energía) completado.*

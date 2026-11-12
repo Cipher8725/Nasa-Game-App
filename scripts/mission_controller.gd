@@ -18,9 +18,20 @@ func _ready() -> void:
 	_game.start_mission()
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Con un minijuego de reparación abierto el reinicio se ignora: el jugador
+	# está interactuando con la consola, no reiniciando la partida.
+	if _is_minigame_open():
+		return
 	# Reinicio de la misión con la tecla configurada "restart_mission".
 	if event.is_action_pressed("restart_mission"):
 		_restart_mission()
+
+## Indica si hay algún minijuego de reparación en pantalla.
+func _is_minigame_open() -> bool:
+	if not is_inside_tree():
+		return false
+	var manager: RepairMinigameManager = get_tree().get_first_node_in_group("repair_minigames") as RepairMinigameManager
+	return manager != null and manager.is_open()
 
 ## Reinicia la partida actual desde el principio.
 func _restart_mission() -> void:

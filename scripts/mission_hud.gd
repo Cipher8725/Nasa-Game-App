@@ -139,3 +139,7 @@ func _show_alert(message: String, duration: float) -> void:
 	_alert_label.text = message
 	_alert_label.visible = true
 	_alert_time_left = duration
+
+## Muestra un aviso en el HUD. Uso externo (minijuegos de reparación).
+func show_alert(message: String, duration: float = 3.0) -> void:
+	_show_alert(message, duration)

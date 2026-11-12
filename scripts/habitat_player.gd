@@ -36,6 +36,8 @@ extends CharacterBody3D
 ## Consolas actualmente dentro del radio de interacción.
 var _consoles_in_range: Array[ResourceConsole] = []
 var _pitch: float = 0.0
+## Indica si el jugador tiene el control (se desactiva al abrir un minijuego).
+var _input_enabled: bool = true
 
 func _ready() -> void:
 	# El radio de interacción se define en el Inspector, se propaga a la esfera.
@@ -47,6 +49,19 @@ func _ready() -> void:
 	_interaction_area.area_exited.connect(_on_interaction_area_exited)
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+## Habilita o deshabilita el control del jugador.
+## Los minijuegos de reparación lo llaman para que el ratón quede libre.
+func set_input_enabled(enabled: bool) -> void:
+	_input_enabled = enabled
+	if enabled:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+## ¿El jugador tiene el control habilitado?
+func is_input_enabled() -> bool:
+	return _input_enabled
 
 func _unhandled_input(event: InputEvent) -> void:
 	# `ui_cancel` es la acción por defecto de Escape.
@@ -68,7 +83,9 @@ func _physics_process(delta: float) -> void:
 	elif velocity.y < 0.0:
 		velocity.y = 0.0
 
-	var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var input_direction: Vector2 = Vector2.ZERO
+	if _input_enabled:
+		input_direction = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var desired_direction: Vector3 = (transform.basis * Vector3(input_direction.x, 0.0, input_direction.y))
 	desired_direction.y = 0.0
 
@@ -80,24 +97,39 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, acceleration * delta)
 		velocity.z = move_toward(velocity.z, 0.0, acceleration * delta)
 
-	if is_on_floor() and Input.is_action_just_pressed("jump"):
+	if _input_enabled and is_on_floor() and Input.is_action_just_pressed("jump"):
 		velocity.y = jump_velocity
 
 	move_and_slide()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	# Interacción con consolas: la tecla configurada repara el recurso.
+	# Con un minijuego abierto el control está bloqueado y no se repara nada.
+	if not _input_enabled:
+		return
 	if event.is_action_pressed("interact"):
 		_repair_nearest_console()
 
 ## Repara el recurso de la consola más cercana dentro del radio de interacción.
+## Si el recurso tiene minijuego, se abre en vez de reparar al instante.
 func _repair_nearest_console() -> void:
 	var target: ResourceConsole = _find_nearest_console()
 	if target == null:
 		return
+	var manager: RepairMinigameManager = _get_minigame_manager()
+	if manager != null and manager.has_minigame_for(target.resource_type):
+		if manager.open_minigame(target):
+			print("[Jugador] Minijuego de reparación abierto: %s" % target.display_name)
+			return
 	var amount: float = target.repair()
 	if amount > 0.0:
 		print("[Jugador] Reparación completada en %s (+%.0f)" % [target.display_name, amount])
+
+## Devuelve el gestor de minijuegos (null si la escena no lo tiene).
+func _get_minigame_manager() -> RepairMinigameManager:
+	if not is_inside_tree():
+		return null
+	return get_tree().get_first_node_in_group("repair_minigames") as RepairMinigameManager
 
 ## Devuelve la consola más cercana al jugador, o null si no hay ninguna.
 func _find_nearest_console() -> ResourceConsole:
