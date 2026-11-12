@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/emergency_system.gd" id="1_emergency"]
+
+[node name="EmergencySystem" type="Node"]
+script = ExtResource("1_emergency")
+
+[node name="EmergencyTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 30.0

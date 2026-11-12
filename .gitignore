@@ -1,0 +1,63 @@
+# ─────────────────────────────────────────────────────────────
+# Godot 4.7 — archivos a EXCLUIR del control de versiones
+# ─────────────────────────────────────────────────────────────
+# Referencia oficial:
+# https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html
+#
+# CRÍTICO: en Godot 4.4+ los archivos `.uid` DEBEN versionarse.
+# "*.uid should NOT be added to .gitignore" — si se ignoran, Godot
+# genera UIDs distintos en cada clon y se rompen las referencias
+# `uid://` de escenas y recursos.
+#   https://godotengine.org/article/uid-changes-coming-to-godot-4-4/
+#
+# Se ignoran SOLO:
+#   .godot/          → caché de importación y datos del proyecto
+#   *.translation    → traducciones compiladas (binarias, generadas)
+
+# Caché de importación y datos del proyecto (regenerable)
+.godot/
+
+# Traducciones compiladas (se generan desde los CSV)
+*.translation
+
+# Presets de exportación: contienen rutas locales de este equipo.
+# Godot 4.1+ ya no guarda credenciales aquí, pero las rutas absolutas
+# no sirven en otros equipos. Descomentar si se quiere versionarlos:
+# export_presets.cfg
+
+# ─────────────────────────────────────────────────────────────
+# Entorno de desarrollo
+# ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+.opencode/logs/
+
+# AI Tool Temp Files
+.sisyphus/
+tmp/
+
+# Dependencias
+node_modules/
+vendor/
+
+# Temp
+*.tmp
+*.temp
+.cache/
+
+# Secretos
+.env
+.env.*
+*.pem
+*.key
+credentials.json

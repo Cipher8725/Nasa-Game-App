@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="MissionConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/mission_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+mission_duration = 180.0
+briefing_duration = 3.0
+max_oxygen = 100.0
+max_energy = 100.0
+max_water = 100.0
+max_structure = 100.0
+oxygen_decay_rate = 0.6
+energy_decay_rate = 0.22
+water_decay_rate = 0.16
+structure_decay_rate = 0.08
+emergency_interval_min = 30.0
+emergency_interval_max = 50.0
+emergency_severity_min = 0.3
+emergency_severity_max = 0.8
+score_per_second = 1.0
+score_per_remaining_resource = 2.0
+critical_threshold = 20.0
+console_restore_amount = 30.0

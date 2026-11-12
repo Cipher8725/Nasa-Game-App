@@ -1,0 +1,33 @@
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Godot
+.import/
+*.import
+export/
+*.pck
+*.exe
+*.dll
+*.so
+*.dylib
+
+# OS
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Log
+*.log
+
+# Temp
+tmp/
+temp/

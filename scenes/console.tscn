@@ -1,0 +1,50 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/resource_console.gd" id="1_console"]
+[ext_resource type="PackedScene" path="res://ai_assets/habitat/command_console.glb" id="2_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_area"]
+size = Vector3(3.6, 2.4, 2.9)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(3.5, 1.0, 2.7)
+
+[sub_resource type="LabelSettings" id="LabelSettings_console"]
+font_size = 42
+outline_size = 14
+outline_color = Color(0, 0, 0, 0.85)
+
+[node name="ResourceConsole" type="Area3D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_console")
+
+[node name="ConsoleModel" parent="." instance=ExtResource("2_model")]
+scale = Vector3(0.55, 0.55, 0.55)
+
+[node name="ConsoleLight" type="OmniLight3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+light_color = Color(0.2, 0.6, 0.9, 1)
+light_energy = 1.6
+omni_range = 5.0
+
+[node name="ConsoleLabel" type="Label3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
+pixel_size = 0.006
+billboard = 1
+text = "CONSOLA"
+label_settings = SubResource("LabelSettings_console")
+
+[node name="ConsoleCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("BoxShape3D_area")
+
+[node name="ConsoleBody" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="BodyCollision" type="CollisionShape3D" parent="ConsoleBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_body")

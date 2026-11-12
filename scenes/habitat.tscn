@@ -1,0 +1,120 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/habitat.gd" id="1_habitat"]
+[ext_resource type="PackedScene" path="res://scenes/console.tscn" id="2_console"]
+[ext_resource type="PackedScene" path="res://scenes/habitat_decor.tscn" id="3_decor"]
+[ext_resource type="PackedScene" path="res://ai_assets/space/planet_verdant_world.glb" id="4_planet"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_space"]
+sky_top_color = Color(0.02, 0.02, 0.05, 1)
+sky_horizon_color = Color(0.08, 0.09, 0.16, 1)
+ground_bottom_color = Color(0.01, 0.01, 0.02, 1)
+ground_horizon_color = Color(0.05, 0.06, 0.1, 1)
+sun_angle_max = 30.0
+
+[sub_resource type="Sky" id="Sky_space"]
+sky_material = SubResource("ProceduralSkyMaterial_space")
+
+[sub_resource type="Environment" id="Environment_space"]
+background_mode = 2
+sky = SubResource("Sky_space")
+ambient_light_source = 3
+ambient_light_color = Color(0.45, 0.52, 0.68, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(20, 0.4, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(20, 4, 0.8)
+
+[node name="Habitat" type="Node3D"]
+script = ExtResource("1_habitat")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_space")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7, 0.71, 0, -0.71, 0.7, 0, 10, 0)
+light_energy = 1.0
+shadow_enabled = true
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+light_color = Color(0.85, 0.9, 1, 1)
+light_energy = 2.0
+omni_range = 14.0
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorCollision" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="WallBack" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="WallCollision" type="CollisionShape3D" parent="WallBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -10)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallFront" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="WallCollision" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 10)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallLeft" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="WallCollision" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 0)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallRight" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="WallCollision" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 0)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="ConsoleOxygen" parent="." instance=ExtResource("2_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -8)
+resource_type = &"oxygen"
+display_name = "OXÍGENO"
+console_color = Color(0.2, 0.6, 0.9, 1)
+
+[node name="ConsoleEnergy" parent="." instance=ExtResource("2_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -8)
+resource_type = &"energy"
+display_name = "ENERGÍA"
+console_color = Color(0.95, 0.75, 0.2, 1)
+
+[node name="ConsoleWater" parent="." instance=ExtResource("2_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -8)
+resource_type = &"water"
+display_name = "AGUA"
+console_color = Color(0.2, 0.85, 0.75, 1)
+
+[node name="ConsoleStructure" parent="." instance=ExtResource("2_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -8)
+resource_type = &"structure"
+display_name = "ESTRUCTURA"
+console_color = Color(0.85, 0.35, 0.35, 1)
+
+[node name="PlayerStart" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+
+[node name="Decor" parent="." instance=ExtResource("3_decor")]
+
+[node name="Planet" parent="." instance=ExtResource("4_planet")]
+transform = Transform3D(120, 0, 0, 0, 120, 0, 0, 0, 120, -150, -40, -260)

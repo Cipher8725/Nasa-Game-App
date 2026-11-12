@@ -1,0 +1,38 @@
+# Normalizar EOL para todos los archivos que Git considera de texto.
+* text=auto eol=lf
+
+# ─────────────────────────────────────────────────────────────
+# Git LFS — assets binarios grandes
+# ─────────────────────────────────────────────────────────────
+# Configurado ANTES del primer commit, según la documentación oficial
+# de Godot 4.7 (https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html).
+#
+# Los .glb y .png de ai_assets/ se guardan como punteros en el repositorio y
+# el binario real vive en el almacén LFS. Esto mantiene el clon ligero.
+
+# Modelos 3D
+*.glb filter=lfs diff=lfs merge=lfs -text
+*.gltf filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+
+# Imágenes
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
+*.dds filter=lfs diff=lfs merge=lfs -text
+
+# Audio
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+
+# Fuentes
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
+*.woff filter=lfs diff=lfs merge=lfs -text
+*.woff2 filter=lfs diff=lfs merge=lfs -text

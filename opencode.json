@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "timeout": {
+      "startup": 120000,
+      "catalog": 60000,
+      "execution": 600000
+    },
+    "servers": {
+      "godot": {
+        "type": "local",
+        "command": ["npx.cmd", "-y", "@coding-solo/godot-mcp"],
+        "cwd": ".",
+        "environment": {
+          "GODOT_PATH": "H:\\Godot V4.7.2\\Godot_v4.7.2-stable_win64_console.exe",
+          "DEBUG": "true"
+        },
+        "timeout": {
+          "startup": 120000
+        }
+      }
+    }
+  }
+}
