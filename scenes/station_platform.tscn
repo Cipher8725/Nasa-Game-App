@@ -1,0 +1,132 @@
+[gd_scene load_steps=15 format=3]
+
+; Plataforma de la estación: un gran cubo gris sobre el que se apoya el módulo
+; habitable. El cubo es un PLACEHOLDER que se sustituirá por un mapa con
+; textura (ver `resources/station_platform_material.tres`).
+;
+; Piezas usadas directamente desde `res://assets/` (sin copiarlas):
+;  - Molten Maps: pasarela, barandillas y módulos laterales.
+;  - KayKit Space Base Bits: depósitos, contenedores, camión, paneles
+;    solares, plataforma de aterrizaje y farolas del exterior.
+;
+; El exterior es decorado: no tiene colisiones (el jugador no sale del módulo).
+
+[ext_resource type="Material" path="res://resources/station_platform_material.tres" id="1_grey"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Catwalk_1.glb" id="2_catwalk"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Railing_Flat.glb" id="3_railing"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Corridor_Boundary_4x8.glb" id="4_module"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargodepot_A.gltf" id="5_depot_a"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargodepot_B.gltf" id="6_depot_b"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargo_A_stacked.gltf" id="7_cargo"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/spacetruck_large.gltf" id="8_truck"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/solarpanel.gltf" id="9_solar"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/landingpad_large.gltf" id="10_pad"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/lander_A.gltf" id="11_lander"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/lights.gltf" id="12_light"]
+[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/structure_low.gltf" id="13_structure"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform"]
+size = Vector3(60, 60, 60)
+
+[node name="StationPlatform" type="Node3D"]
+
+; Cubo base: 60 m de lado. Su cara superior queda a y = -0.15 para que las
+; baldosas del suelo del módulo (que ocupan y = -0.14 .. 0.01) apoyen encima
+; sin solaparse ni producir z-fighting.
+[node name="BaseCube" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30.15, 0)
+mesh = SubResource("BoxMesh_platform")
+surface_material_override/0 = ExtResource("1_grey")
+
+; Pasarela de observación delante del ventanal (mirando hacia +Z).
+[node name="ViewDeck" type="Node3D" parent="."]
+
+[node name="Catwalk_Left" parent="ViewDeck" instance=ExtResource("2_catwalk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, 13.5)
+
+[node name="Catwalk_Center" parent="ViewDeck" instance=ExtResource("2_catwalk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 13.5)
+
+[node name="Catwalk_Right" parent="ViewDeck" instance=ExtResource("2_catwalk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.15, 13.5)
+
+[node name="Railing_Front_Left" parent="ViewDeck" instance=ExtResource("3_railing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, 15.9)
+
+[node name="Railing_Front_Right" parent="ViewDeck" instance=ExtResource("3_railing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.15, 15.9)
+
+[node name="Railing_Side_Left" parent="ViewDeck" instance=ExtResource("3_railing")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -3.15, 0.15, 13.5)
+
+[node name="Railing_Side_Right" parent="ViewDeck" instance=ExtResource("3_railing")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.15, 0.15, 13.5)
+
+; Módulos auxiliares de la estación, a ambos lados de la pasarela.
+[node name="SideModules" type="Node3D" parent="."]
+
+[node name="Module_Left" parent="SideModules" instance=ExtResource("4_module")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6, -0.15, 14.5)
+
+[node name="Module_Right" parent="SideModules" instance=ExtResource("4_module")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.6, -0.15, 14.5)
+
+; ─────────────────────────────────────────────────────────────
+; Exterior (KayKit). Todo apoya sobre la cara superior del cubo (y = -0.15).
+; ─────────────────────────────────────────────────────────────
+[node name="Exterior" type="Node3D" parent="."]
+
+; Zona de carga, a la izquierda del módulo.
+[node name="CargoDepot_A" parent="Exterior" instance=ExtResource("5_depot_a")]
+transform = Transform3D(2.445369, 0, -0.519779, 0, 2.5, 0, 0.519779, 0, 2.445369, -17, -0.15, -2)
+
+[node name="CargoDepot_B" parent="Exterior" instance=ExtResource("6_depot_b")]
+transform = Transform3D(1.993877, 0, 0.929760, 0, 2.2, 0, -0.929760, 0, 1.993877, -16, -0.15, 5)
+
+; Contenedores apilados a la derecha del módulo.
+[node name="CargoStack_0" parent="Exterior" instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 13.5, -0.15, -11)
+
+[node name="CargoStack_1" parent="Exterior" instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 17, -0.15, -11)
+
+[node name="CargoStack_2" parent="Exterior" instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 13.5, -0.15, -7.5)
+
+[node name="CargoStack_3" parent="Exterior" instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 17, -0.15, -7.5)
+
+[node name="SpaceTruck" parent="Exterior" instance=ExtResource("8_truck")]
+transform = Transform3D(2.0, 0, -3.46, 0, 4, 0, 3.46, 0, 2.0, 15, -0.15, 3)
+
+; Planta solar en el extremo izquierdo del cubo.
+[node name="SolarArray" type="Node3D" parent="Exterior"]
+
+[node name="Solar_0" parent="SolarArray" instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -14)
+
+[node name="Solar_1" parent="SolarArray" instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -11.3)
+
+[node name="Solar_2" parent="SolarArray" instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -8.6)
+
+[node name="Solar_3" parent="SolarArray" instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -5.9)
+
+; Pequeño puesto avanzado y plataforma de aterrizaje, al fondo.
+[node name="Outpost" parent="Exterior" instance=ExtResource("13_structure")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -16, -0.15, 15)
+
+[node name="LandingPad" parent="Exterior" instance=ExtResource("10_pad")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 19, -0.15, 15)
+
+[node name="Lander" parent="Exterior" instance=ExtResource("11_lander")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 19, 1.35, 15)
+
+; Farolas que delimitan la plataforma de aterrizaje.
+[node name="PadLight_Left" parent="Exterior" instance=ExtResource("12_light")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 13, -0.15, 19)
+
+[node name="PadLight_Right" parent="Exterior" instance=ExtResource("12_light")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 25, -0.15, 19)

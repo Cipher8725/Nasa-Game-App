@@ -1,61 +1,97 @@
 # Assets del proyecto
 
-## Estructura
+## Política: los packs se usan in situ
+
+Los tres packs de terceros viven en `assets/` y las escenas los referencian
+**directamente** (`res://assets/...`). No se copian, no se renombran y no se
+mueven de esa carpeta (decisión del arquitecto).
 
 ```
-res://ai_assets/          → assets 3D que USA el juego (versionados en Git)
-├── habitat/              → arquitectura y props del hábitat (Molten Maps, CC0)
-│   ├── *.glb             → modelos 3D
-│   └── *.png             → texturas del atlas (referenciadas por los .glb)
-├── space/                → decorado del fondo espacial
-│   ├── planet_*.glb
-│   └── asteroid_*.glb
-└── LICENSES/             → textos de licencia de cada origen
+assets/
+├── Molten Maps SciFi Asset Pack/      → interior del módulo habitable (CC0)
+├── KayKit_Space_Base_Bits_1.0_FREE/   → exterior: carga, camión, paneles, lander (CC0)
+└── Planets_Asteroids_FREE_SAMPLE/     → planeta Verdant World y asteroide (restrictivas)
 ```
 
-Los assets de terceros completos **no** están en el repositorio. Se conservan en:
+`ai_assets/` queda reservado para los recursos que se generen con APIs
+externas (Meshy / Fal) según `AGENTS.md` §4. Los packs existentes **no** se
+duplican ahí: las escenas apuntan a `assets/`.
+
+Las licencias y la atribución están en `ai_assets/LICENSES.md` y los textos
+originales en `ai_assets/LICENSES/`.
+
+## Por qué los packs no se versionan en Git
+
+Dos de los packs prohíben redistribuir los archivos originales y entre los
+tres suman ~136 MB. Por eso `.gitignore` excluye las tres carpetas:
 
 ```
-H:\GodotProyects\GodotProyects 4.7.2\nasa-asset-vault\
+/assets/KayKit_Space_Base_Bits_1.0_FREE/
+/assets/Molten Maps SciFi Asset Pack/
+/assets/Planets_Asteroids_FREE_SAMPLE/
 ```
 
-Motivos y licencias detallados en → `res://ai_assets/LICENSES.md`.
+Al clonar el repositorio hay que colocar los packs en `assets/` y comprobar
+que están todos:
 
-## ⚠️ Importante: los `.glb` necesitan sus texturas PNG
-
-Los archivos `.glb` de Molten Maps son glTF con **texturas externas** referenciadas
-por UID. Si se copia un `.glb` sin su PNG correspondiente, Godot avisa:
-
-```
-WARNING: 'res://ai_assets/habitat/command_console.glb': In external resource #0,
-invalid UID: 'uid://bhyqi287r070t' - using text path instead: '...'
+```bash
+bash tools/check_assets.sh
+godot --headless --path . --import
 ```
 
-El juego sigue funcionando, pero con **materiales sin textura**. Para restaurar
-los assets tras clonar el repositorio hay que copiar **el `.glb` y su PNG
-asociado** (mismo nombre base).
+## Estructura de las escenas
 
-## Procedimiento para añadir un asset nuevo
+| Escena | Contenido |
+|--------|-----------|
+| `scenes/station_platform.tscn` | Cubo gris de 60 m + pasarela y módulos laterales (Molten Maps) + exterior KayKit |
+| `scenes/habitat_decor.tscn` | Interior del módulo: suelo, paredes, techo, ventanal y props (Molten Maps) |
+| `scenes/habitat.tscn` | Colisiones, consolas, luces, plataforma, decorado y espacio exterior |
+| `scenes/console.tscn` | Consola de recurso sobre `Command_Console.glb` (Molten Maps) |
 
-1. Copiar el `.glb` (y su `.png` si existe) a `res://ai_assets/<categoria>/`.
-2. Renombrarlo a `snake_case` descriptivo (convención del proyecto).
-3. Verificar la licencia del pack de origen y anotarla en `LICENSES.md`.
-4. Importar: `godot --headless --path . --import`.
-5. Colocarlo en la escena y **verificar que no se solapa** con otros assets:
-   ```powershell
-   godot --headless --path . --quit-after 500 "res://tests/asset_collision_test.tscn"
-   ```
-   El test lista los solapes significativos (> 0,05 m³) y falla si hay alguno.
-6. Si el asset tiene licencia restrictiva (no CC0), **no versionarlo**: dejarlo
-   solo en la boveda.
+## Cubo gris de la estación (placeholder)
 
-## Test de colisiones
+La estación se apoya sobre un cubo de 60 × 60 × 60 m cuya cara superior está
+en `y = -0.15` (las baldosas del suelo ocupan `y = -0.14 .. 0.01`).
 
-`tests/asset_collision_test.gd` recorre la escena del hábitat y compara los AABB
-de las 64 mallas placed (1536 pares). Ignora:
+El material está aislado en un único archivo para poder sustituirlo por una
+textura de mapa sin tocar la escena:
 
-- Copias del mismo asset (tejas y paredes repetidas).
-- El suelo (los objetos se apoyan sobre las baldosas).
-- Contactos de borde (< 0,05 m³).
+```
+resources/station_platform_material.tres
+```
 
-Falla si algún asset se solapa de forma significativa con otro o con una pared.
+Para cambiar el aspecto del cubo basta con asignarle un `albedo_texture`
+(por ejemplo, una textura descargada en `res://ai_assets/`) o crear un
+material nuevo y asignarlo a `StationPlatform/BaseCube` en
+`scenes/station_platform.tscn`.
+
+## Verificación automatizada
+
+```powershell
+$godot = "H:\Godot V4.7.2\Godot_v4.7.2-stable_win64_console.exe"
+
+# Colocación de assets: AABB de las 100 mallas del interior (911 pares)
+& $godot --headless --path . --quit-after 2000 "res://tests/asset_collision_test.tscn"
+
+# Física: paredes, suelo, punto de aparición y movimiento del jugador
+& $godot --headless --path . --quit-after 2000 "res://tests/physics_test.tscn"
+```
+
+`asset_collision_test` ignora:
+
+- Las copias del mismo asset (baldosas y paneles repetidos).
+- Los grupos `Floor` y `Ceiling` (superficies de apoyo).
+- El subárbol `StationPlatform` (el cubo y el decorado exterior).
+- Los contactos de borde (< 0,05 m³).
+
+## Añadir una pieza de un pack
+
+1. Localizarla dentro de `assets/<pack>/...` y **no moverla**.
+2. Añadir un `ext_resource` con su ruta real, por ejemplo:
+   `res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Grey.glb`.
+3. Colocarla en la escena y pasar el test de colisiones.
+4. Si el modelo tiene el origen descentrado (AABB asimétrico), colócalo con
+   margen respecto a la cara interior de la pared (`x/z = ±9.23`).
+
+Los `.glb` de Molten Maps llevan su PNG en la misma carpeta; mantenerlos
+juntos evita avisos de UID y materiales sin textura.

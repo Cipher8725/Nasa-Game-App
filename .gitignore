@@ -61,3 +61,14 @@ vendor/
 *.pem
 *.key
 credentials.json
+
+# ─────────────────────────────────────────────────────────────
+# Packs de terceros: presentes en disco, FUERA de Git
+# ─────────────────────────────────────────────────────────────
+# Las escenas usan los packs in situ desde `assets/` (decisión del
+# arquitecto: no moverlos ni copiarlos). No se versionan porque dos de
+# ellos prohíben redistribuir los archivos originales y entre los tres
+# suman ~136 MB. Ver `ai_assets/LICENSES.md` y `tools/check_assets.sh`.
+/assets/KayKit_Space_Base_Bits_1.0_FREE/
+/assets/Molten Maps SciFi Asset Pack/
+/assets/Planets_Asteroids_FREE_SAMPLE/

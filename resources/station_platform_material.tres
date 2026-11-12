@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+; Material del cubo base de la estación.
+;
+; PLACEHOLDER: este cubo es el "suelo" de la estación y se sustituirá por un
+; mapa con textura. Para cambiarlo basta con rellenar `albedo_texture` con el
+; recurso de textura (res://ai_assets/...) o crear un nuevo material y
+; asignarlo a `StationPlatform/BaseCube` en `scenes/station_platform.tscn`.
+
+[resource]
+resource_name = "StationPlatformGrey"
+albedo_color = Color(0.4, 0.42, 0.46, 1)
+metallic = 0.05
+roughness = 0.95

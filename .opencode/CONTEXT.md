@@ -96,6 +96,47 @@ sistemas.
   no los importa.
 - `ai_assets/LICENSES.md` y `docs/ASSETS.md` documentan origen y licencias.
 
+### Hito 5 — Estación espacial con los packs in situ (2026-11-12)
+
+- **Los packs vuelven a `assets/` y se usan in situ** (orden del arquitecto:
+  no moverlos). Se eliminaron las copias de `ai_assets/habitat/` y
+  `ai_assets/space/`, que quedaron sin uso: las escenas ahora referencian
+  `res://assets/Molten Maps SciFi Asset Pack/...`,
+  `res://assets/KayKit_Space_Base_Bits_1.0_FREE/...` y
+  `res://assets/Planets_Asteroids_FREE_SAMPLE/...`.
+- **`scenes/station_platform.tscn`** (nuevo): cubo gris de 60 m (placeholder,
+  material aislado en `resources/station_platform_material.tres`), pasarela y
+  módulos laterales de Molten Maps, y decorado exterior de KayKit (depósitos
+  de carga, contenedores apilados, camión, paneles solares, plataforma de
+  aterrizaje con lander y farolas).
+- **`scenes/habitat_decor.tscn` reconstruido** con piezas reales: 25 baldosas
+  de suelo, 4 franjas de peligro, 20 paneles de pared (3 ventanales
+  `Wall_Glass_Clear` al +Z y 2 puertas), 21 baldosas de techo + 4 luminarias y
+  22 props (generador, baterías, literas, tubo criogénico, hidroponía,
+  comedor, orrery, plantas, tuberías, aires acondicionados, pantallas y un
+  monitor grande).
+- **`scenes/habitat.tscn`**: instancia la plataforma y el interior, coloca las
+  4 consolas en z = -7.85, añade 4 luces omni interiores y el fondo espacial
+  (planeta Verdant World a escala 140 y asteroide). El sol se reorientó para
+  iluminar la cara del planeta que mira al módulo; se añadió una luz de
+  relleno sin sombras y tonemap ACES para contener los blancos.
+- **Bug de física corregido**: las colisiones de las paredes laterales estaban
+  sin rotar y cubrían media habitación (el jugador quedaba atrapado dentro de
+  un sólido). Ahora están rotadas 90° sobre Y en x = ±9.6, con
+  `BoxShape3D_wall` de `(20, 4, 0.74)`, coincidiendo con la cara interior de
+  los paneles visuales.
+- **Tests**: `asset_collision_test` actualizado (100 mallas, 911 pares; ignora
+  el subárbol `StationPlatform` y los grupos `Floor`/`Ceiling`) y nuevo
+  `tests/physics_test.tscn`, que con raycasts y `test_move` verifica que el
+  centro de la sala es transitable, las 4 paredes y el suelo bloquean y el
+  punto de aparición está libre.
+- **Verificación real**: import + 5 suites (`functional`, `interaction`,
+  `simulation`, `asset_collision`, `physics`) → `TODO OK`; además se
+  renderizaron capturas del juego para revisar ventanal, consolas y exterior.
+- **Limpieza**: `tools/restore_assets.sh` (obsoleto) sustituido por
+  `tools/check_assets.sh`; `.gitignore` excluye los 3 packs por licencia y
+  tamaño; `docs/ASSETS.md` y `ai_assets/LICENSES.md` actualizados.
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -103,10 +144,13 @@ sistemas.
 ```
 scenes/main.tscn  (Node3D + mission_controller.gd)
 ├── Habitat       → instancia de scenes/habitat.tscn
-│   ├── Floor / WallBack / WallFront / WallLeft / WallRight  (StaticBody3D + MeshInstance3D + CollisionShape3D)
-│   ├── ConsoleOxygen / ConsoleEnergy / ConsoleWater / ConsoleStructure → instancias de scenes/console.tscn
-│   ├── WorldEnvironment (Sky + ProceduralSkyMaterial)
-│   └── DirectionalLight3D
+│   ├── WorldEnvironment + SunLight + FillLight
+│   ├── Floor / WallBack / WallFront / WallLeft / WallRight  (StaticBody3D + CollisionShape3D)
+│   ├── StationPlatform → scenes/station_platform.tscn (cubo de 60 m + pasarela + exterior KayKit)
+│   ├── Interior        → scenes/habitat_decor.tscn (suelo, paredes, techo y props)
+│   ├── ConsoleOxygen / ConsoleEnergy / ConsoleWater / ConsoleStructure → scenes/console.tscn
+│   ├── InteriorLights  → 4 OmniLight3D (uno por luminaria del techo)
+│   └── SpaceBackdrop   → planeta Verdant World + asteroide
 ├── Player        → instancia de scenes/player.tscn (CharacterBody3D)
 ├── EmergencySystem → instancia de scenes/emergency_system.tscn (Node + Timer)
 └── UILayer (CanvasLayer)
@@ -180,38 +224,45 @@ existe en 4.7.2).
 
 ### Pendiente inmediato (siguiente hito)
 
-1. **Audio**: alarmas de recurso crítico, impacto de emergencia y confirmación
+1. **Textura del cubo de la estación**: sustituir el material gris
+   (`resources/station_platform_material.tres`) por un mapa con textura. Basta
+   con asignar `albedo_texture` o crear un material nuevo para `BaseCube`.
+2. **Audio**: alarmas de recurso crítico, impacto de emergencia y confirmación
    de reparación. Usar `AudioStreamPlayer` definido en las escenas.
-2. **Assets finales del jugador**: el astronauta sigue siendo una cápsula
-   (`CapsuleMesh`). KayKit no incluye personajes; habría que generarlo con
-   Meshy (`MESHY_API_KEY` disponible) o buscar un pack CC0 con astronautas.
-3. **Niveles adicionales**: segunda misión con distinta dificultad y más
+3. **Assets finales del jugador**: el astronauta sigue siendo una cápsula
+   (`CapsuleMesh`). **Decisión actual: dejarlo así** (no hay modelo de
+   astronauta en los packs). Si se quiere cambiar, usar Meshy
+   (`MESHY_API_KEY`) y guardar el resultado en `res://ai_assets/`.
+4. **Niveles adicionales**: segunda misión con distinta dificultad y más
    consolas, cargando una `MissionConfig` distinta.
-4. **Remoto Git**: crear el repositorio en GitHub y añadirlo como `origin`
+5. **Remoto Git**: crear el repositorio en GitHub y añadirlo como `origin`
    (`git remote add origin <url>` + `git push -u origin main`). Pendiente de
    decisión del arquitecto: el repositorio debe ser **privado** mientras
-   contengan assets con licencias restrictivas.
+   contenga assets con licencias restrictivas.
 
 ### Pendiente secundario
 
-5. **Entrada de guardado/carga en el HUD**: botones `F5` (guardar) y `F9`
+6. **Entrada de guardado/carga en el HUD**: botones `F5` (guardar) y `F9`
    (cargar) con la API `save_game` / `load_game` ya implementada.
-6. **Sonido y música ambiental** del hábitat.
-7. **Tutorial**: cartel inicial que explique los controles (WASD, ratón, `E`, `R`).
-8. **Estadísticas de sesión**: tiempo total y misiones completadas, ya
+7. **Sonido y música ambiental** del hábitat.
+8. **Tutorial**: cartel inicial que explique los controles (WASD, ratón, `E`, `R`).
+9. **Estadísticas de sesión**: tiempo total y misiones completadas, ya
    disponibles vía `get_missions_completed()`.
-9. **Exportación**: crear `export_presets.cfg` para Windows/Linux.
+10. **Exportación**: crear `export_presets.cfg` para Windows/Linux.
 
 ### Deuda técnica conocida
 
-10. `scripts/mission_hud.gd` actualiza cronómetro y puntuación cada fotograma en
+11. `scripts/mission_hud.gd` actualiza cronómetro y puntuación cada fotograma en
     `_process`. Es aceptable, pero puede pasar a 10 Hz igual que los recursos.
-11. La skill `godot-console` menciona `--check-only` con `--script`; ese modo no
+12. La skill `godot-console` menciona `--check-only` con `--script`; ese modo no
     registra Autoloads, así que solo sirve para scripts sin dependencias de
     Autoload (o usando `get_instance()`).
-12. Los modelos `.glb` de Molten Maps referencian sus texturas PNG por UID:
-    **cada `.glb` debe guardarse junto a su PNG** (mismo nombre base). Si se
-    copia solo el `.glb`, Godot avisa y el material queda sin textura.
+13. Los `.glb` de Molten Maps referencian sus texturas PNG por UID: **cada
+    `.glb` debe permanecer junto a su PNG** (mismo nombre base). Por eso los
+    packs se usan completos desde `assets/` y no se copian archivos sueltos.
+14. Los tres packs de `assets/` **no están en Git** (licencias y ~136 MB). Al
+    clonar hay que colocarlos y ejecutar `bash tools/check_assets.sh` antes de
+    importar; sin ellos las escenas no cargan.
 
 ## 5. ¿Cómo hay que hacerlo?
 
@@ -246,6 +297,8 @@ $root  = "H:\GodotProyects\GodotProyects 4.7.2\na-sa-game"
 & $godot --headless --path $root --quit-after 20000 "res://tests/functional_test.tscn"
 & $godot --headless --path $root --quit-after 20000 "res://tests/interaction_test.tscn"
 & $godot --headless --path $root --quit-after 20000 "res://tests/simulation_test.tscn"
+& $godot --headless --path $root --quit-after 2000  "res://tests/asset_collision_test.tscn"
+& $godot --headless --path $root --quit-after 2000  "res://tests/physics_test.tscn"
 
 # 3. Juego principal
 & $godot --headless --path $root --quit-after 5
@@ -283,9 +336,11 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   `uid://` de las escenas.
 - **Git LFS** para binarios (`.glb`, `.png`, `.fbx`, audio, fuentes). El
   `.gitattributes` ya está configurado.
-- **Packs de terceros**: solo se versiona lo que el juego usa, en
-  `res://ai_assets/`. El resto va a la boveda externa
-  (`nasa-asset-vault/`), por licencia y por tamaño.
+- **Packs de terceros**: se usan **in situ** desde `assets/` y **no se
+  versionan** (ver `.gitignore`). Dos licencias prohíben redistribuirlos y
+  entre los tres suman ~136 MB. `ai_assets/` solo guarda las licencias y, en el
+  futuro, los recursos generados por APIs. Antes de importar, comprobar el
+  entorno con `bash tools/check_assets.sh`.
 - **Verificar el clon** tras cambios en la estructura del repo:
   ```powershell
   git clone --no-hardlinks . <destino-temporal>
@@ -293,4 +348,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 4 (control de versiones y assets 3D) completado.*
+*Actualizado: 2026-11-12 — Hito 5 (estación espacial con los 3 packs in situ, cubo gris, ventanal y test de física) completado.*

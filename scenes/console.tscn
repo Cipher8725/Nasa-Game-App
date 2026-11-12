@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/resource_console.gd" id="1_console"]
-[ext_resource type="PackedScene" path="res://ai_assets/habitat/command_console.glb" id="2_model"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Command_Console.glb" id="2_model"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_area"]
 size = Vector3(3.6, 2.4, 2.9)

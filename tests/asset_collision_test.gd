@@ -1,17 +1,21 @@
 extends Node
 
-## Test de colisiones de assets: comprueba que los modelos 3D colocados en el
-## hábitat no se solapen entre sí de forma significativa.
+## Test de colocación de assets: comprueba que los modelos 3D del módulo
+## habitable no se solapen entre sí de forma significativa.
 ##
 ## Se ignoran:
-##  - Las copias del mismo asset (tejas, paredes repetidas).
-##  - Los contactos con el SUELO: los objetos se apoyan sobre las baldosas y
-##    sus AABB intersectan ligeramente la baldosa. Es geometría correcta, no
-##    una mala colocación. Solo se comprueba asset↔asset y asset↔pared.
+##  - Las copias del mismo asset (baldosas y paneles repetidos).
+##  - Los contactos con el SUELO y el TECHO: las piezas se apoyan/encajan en
+##    ellos y sus AABB se intersectan por diseño.
+##  - La plataforma exterior (StationPlatform): el cubo base de 60 m y la
+##    pasarela son decorado; su AABB envolvería todo el módulo.
 ##  - Los contactos de borde (volumen < 0,05 m³).
 
 ## Volumen mínimo (m³) para considerar que un solape es un error real.
 const MIN_OVERLAP_VOLUME: float = 0.05
+
+## Prefijos de ruta que no participan en la comprobación de solapes.
+const IGNORED_PATH_PARTS: PackedStringArray = ["StationPlatform", "SpaceBackdrop"]
 
 var _meshes: Array[Dictionary] = []
 var _real_overlaps: Array[String] = []
@@ -35,8 +39,8 @@ func _run() -> void:
 			var b: Dictionary = _meshes[j]
 			if String(a["group"]) == String(b["group"]):
 				continue
-			# El suelo es la base: los objetos se apoyan sobre las baldosas.
-			if String(a["group"]) == "Floor" or String(b["group"]) == "Floor":
+			# Suelo y techo son los planos de apoyo: sus contactos son correctos.
+			if _is_ignored_group(String(a["group"])) or _is_ignored_group(String(b["group"])):
 				continue
 			checked += 1
 			var intersection: AABB = a["aabb"].intersection(b["aabb"])
@@ -57,7 +61,11 @@ func _run() -> void:
 	print("=== RESULTADO COLISIONES: %s ===" % ("TODO OK" if failures == 0 else "FALLOS"))
 	get_tree().quit(failures)
 
-## Recorre la jerarquia acumulando AABBs en coordenadas globales.
+## Grupos que no participan: son las superficies de apoyo del módulo.
+func _is_ignored_group(group: String) -> bool:
+	return group == "Floor" or group == "Ceiling"
+
+## Recorre la jerarquía acumulando AABBs en coordenadas globales.
 func _collect(node: Node, root: Node) -> void:
 	for child: Node in node.get_children():
 		if child is MeshInstance3D:
@@ -65,19 +73,28 @@ func _collect(node: Node, root: Node) -> void:
 			var mesh: Mesh = mesh_instance.mesh
 			if mesh != null:
 				var path: String = String(mesh_instance.get_path())
-				_meshes.append({
-					"name": path.replace(String(root.get_path()) + "/", ""),
-					"aabb": mesh_instance.global_transform * mesh.get_aabb(),
-					"group": _group_of(mesh_instance, path),
-				})
+				if not _is_ignored_path(path):
+					_meshes.append({
+						"name": path.replace(String(root.get_path()) + "/", ""),
+						"aabb": mesh_instance.global_transform * mesh.get_aabb(),
+						"group": _group_of(mesh_instance, path),
+					})
 		_collect(child, root)
 
-## Agrupa por nombre base para no comparar copias del mismo asset entre si.
-## Las baldosas del suelo comparten grupo "Floor" (se apoyan encima los objetos).
+## ¿La ruta pertenece a un subárbol excluido del test?
+func _is_ignored_path(path: String) -> bool:
+	for part: String in IGNORED_PATH_PARTS:
+		if path.contains(part):
+			return true
+	return false
+
+## Agrupa por nombre base para no comparar copias del mismo asset entre sí.
+## El suelo y el techo comparten grupo propio (son superficies de apoyo).
 func _group_of(node: MeshInstance3D, path: String) -> String:
-	# Las baldosas viven bajo el nodo "FloorTiles" de la escena de decoracion.
 	if path.contains("FloorTiles"):
 		return "Floor"
+	if path.contains("Ceiling"):
+		return "Ceiling"
 	var n: String = node.name
 	var parts: PackedStringArray = n.split("_")
 	if parts.size() > 1:
