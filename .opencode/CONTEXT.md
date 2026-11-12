@@ -58,8 +58,9 @@ sistemas.
 
 ### Hito 3 — Calidad y verificación
 
-- Suite de 3 pruebas automatizadas en `tests/` (45 comprobaciones en total):
-  `functional_test` (24), `interaction_test` (8), `simulation_test` (13).
+- Suite de 4 pruebas automatizadas en `tests/` (54 comprobaciones en total):
+  `functional_test` (24), `interaction_test` (8), `simulation_test` (13),
+  `asset_collision_test` (9 sobre 64 mallas / 537 pares).
 - MCP de Godot **configurado y conectado** (`opencode.json`), con 14 tools
   operativas (`godot_run_project`, `godot_update_project_uids`, etc.).
 - Skill `godot-unix-timestamp-fix` corregida: `OS.get_unix_time()` no existe en
@@ -68,7 +69,32 @@ sistemas.
   motor (los valores publicados eran erróneos: `8`=CENTER, `12`=BOTTOM_WIDE).
 - `engine-reference/godot/` actualizado a 4.7.2 con los hallazgos verificados.
 - `design/gdd/game-concept.md` rellenado con el concepto de diseño real.
-- `.gitignore` mejorado con el patrón del framework.
+
+### Hito 4 — Control de versiones y assets 3D
+
+- **Repositorio Git reparado y commit inicial creado** (`3f704e5`, rama `main`):
+  - Eliminado el submódulo fantasma: `.opencode/skills/Godot-Skills` estaba en
+    el índice como gitlink (modo `160000`) sin `.gitmodules`. Al clonar, el
+    compañero recibía **0 de 34 skills**. Verificado con un clon real.
+  - `.gitignore` corregido: `*.gd.uid` **no** se ignora (requisito de Godot
+    4.4+; verificado que Godot regenera UIDs distintos si faltan).
+  - `core.autocrlf=input` configurado (recomendación de Godot para Windows).
+  - Identidad Git: `Cesar <flixian2@gmail.com>` (a nivel de repo, no global).
+  - **Git LFS** configurado para `.glb`, `.png`, `.fbx`, `.obj`, audio y fuentes
+    (antes del primer commit, como exige la documentación de Godot).
+- **Assets 3D integrados** (fin del greyboxing del entorno):
+  - Set curado de 16 modelos Molten Maps (CC0) + 2 de fondo espacial en
+    `res://ai_assets/`, renombrados en `snake_case`.
+  - `scenes/habitat_decor.tscn` con 25 baldosas, 20 paredes, 4 luces de techo
+    y 10 props → 64 mallas en total.
+  - `scenes/console.tscn` usa ahora `command_console.glb` real (escala 0,55).
+  - Test `asset_collision_test.gd` que valida la colocación de los assets.
+- **Packs de terceros retirados del proyecto** a la boveda
+  `H:\GodotProyects\GodotProyects 4.7.2\nasa-asset-vault\` (130 MB),
+  por licencia (dos packs prohíben redistribuir) y por tamaño.
+  Los `.blend` (96 MB) se eliminaron: sin Blender son inservibles y Godot 4.7
+  no los importa.
+- `ai_assets/LICENSES.md` y `docs/ASSETS.md` documentan origen y licencias.
 
 ## 3. ¿Cómo se hizo?
 
@@ -150,35 +176,42 @@ con números por frame), pero la señal `resource_changed` se emite a **10 Hz**
 `Time.get_unix_time_from_system()` (verificado: `OS.get_unix_time()` ya no
 existe en 4.7.2).
 
-## 4. ¿Qué hay que hacer?
+### 4. ¿Qué hay que hacer?
 
 ### Pendiente inmediato (siguiente hito)
 
 1. **Audio**: alarmas de recurso crítico, impacto de emergencia y confirmación
    de reparación. Usar `AudioStreamPlayer` definido en las escenas.
-2. **Assets finales**: sustituir el greyboxing por modelos y texturas generados
-   con Meshy/Fal.ai en `res://ai_assets/` (la regla de oro del `AGENTS.md`
-   manda: greyboxing primero, APIs externas solo cuando el hito lo exija).
+2. **Assets finales del jugador**: el astronauta sigue siendo una cápsula
+   (`CapsuleMesh`). KayKit no incluye personajes; habría que generarlo con
+   Meshy (`MESHY_API_KEY` disponible) o buscar un pack CC0 con astronautas.
 3. **Niveles adicionales**: segunda misión con distinta dificultad y más
    consolas, cargando una `MissionConfig` distinta.
+4. **Remoto Git**: crear el repositorio en GitHub y añadirlo como `origin`
+   (`git remote add origin <url>` + `git push -u origin main`). Pendiente de
+   decisión del arquitecto: el repositorio debe ser **privado** mientras
+   contengan assets con licencias restrictivas.
 
 ### Pendiente secundario
 
-4. **Entrada de guardado/carga en el HUD**: botones `F5` (guardar) y `F9`
+5. **Entrada de guardado/carga en el HUD**: botones `F5` (guardar) y `F9`
    (cargar) con la API `save_game` / `load_game` ya implementada.
-5. **Sonido y música ambiental** del hábitat.
-6. **Tutorial**: cartel inicial que explique los controles (WASD, ratón, `E`, `R`).
-7. **Estadísticas de sesión**: tiempo total y misiones completadas, ya
+6. **Sonido y música ambiental** del hábitat.
+7. **Tutorial**: cartel inicial que explique los controles (WASD, ratón, `E`, `R`).
+8. **Estadísticas de sesión**: tiempo total y misiones completadas, ya
    disponibles vía `get_missions_completed()`.
-8. **Exportación**: crear `export_presets.cfg` para Windows/Linux.
+9. **Exportación**: crear `export_presets.cfg` para Windows/Linux.
 
 ### Deuda técnica conocida
 
-9. `scripts/mission_hud.gd` actualiza cronómetro y puntuación cada fotograma en
-   `_process`. Es aceptable, pero puede pasar a 10 Hz igual que los recursos.
-10. La skill `godot-console` menciona `--check-only` con `--script`; ese modo no
+10. `scripts/mission_hud.gd` actualiza cronómetro y puntuación cada fotograma en
+    `_process`. Es aceptable, pero puede pasar a 10 Hz igual que los recursos.
+11. La skill `godot-console` menciona `--check-only` con `--script`; ese modo no
     registra Autoloads, así que solo sirve para scripts sin dependencias de
     Autoload (o usando `get_instance()`).
+12. Los modelos `.glb` de Molten Maps referencian sus texturas PNG por UID:
+    **cada `.glb` debe guardarse junto a su PNG** (mismo nombre base). Si se
+    copia solo el `.glb`, Godot avisa y el material queda sin textura.
 
 ## 5. ¿Cómo hay que hacerlo?
 
@@ -240,5 +273,24 @@ La skill recomienda **no generar `.tscn` a mano** y usar MCP
 funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concatena
 `res://` a la ruta recibida y una ruta absoluta produce `res://H:\...`.
 
+### Control de versiones (reglas del proyecto)
+
+- **Conventional commits** (lo valida el hook `validate-commit.sh`):
+  `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `perf:`, `build:`,
+  `ci:`, `style:`, `revert:`.
+- **Nunca versionar** los `.uid` como ignorados: Godot 4.4+ los exige. Si
+  faltan, se regeneran con valores distintos y se rompen las referencias
+  `uid://` de las escenas.
+- **Git LFS** para binarios (`.glb`, `.png`, `.fbx`, audio, fuentes). El
+  `.gitattributes` ya está configurado.
+- **Packs de terceros**: solo se versiona lo que el juego usa, en
+  `res://ai_assets/`. El resto va a la boveda externa
+  (`nasa-asset-vault/`), por licencia y por tamaño.
+- **Verificar el clon** tras cambios en la estructura del repo:
+  ```powershell
+  git clone --no-hardlinks . <destino-temporal>
+  # comprobar que llegan las skills, los .uid y los assets (LFS)
+  ```
+
 ---
-*Actualizado: 2026-11-10 — Hito 3 (calidad y verificación) completado.*
+*Actualizado: 2026-11-12 — Hito 4 (control de versiones y assets 3D) completado.*
