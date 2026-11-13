@@ -1,69 +1,116 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=11 format=3]
 
 ; ─────────────────────────────────────────────────────────────
-; MÓDULO HABITACIONAL: PASILLO (4 x 8 m)
+; PASILLO  (8 x 8 m)
 ; ─────────────────────────────────────────────────────────────
-; Tramo de pasillo con suelo, techo y paredes (Corridor_Boundary_4x8).
-; Módulo de unión: se coloca en línea entre habitaciones.
-; Convención de módulos: scenes/rooms/README.md.
+; Módulo recreado a partir de la referencia: diseño propio
+;
+; CONVENCIÓN: ver scenes/rooms/README.md. Misma retícula que el
+; módulo de habitat: suelo de 20 x 20 m, paredes en ±9,6, puerta en -Z.
 
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Corridor_Boundary_4x8.glb" id="1_corridor"]
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Mid_Path.glb" id="2_path"]
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Lamp.glb" id="3_floorlamp"]
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Light_White.glb" id="4_walllight"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Mid_Path.glb" id="1_floor_mid_path"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling_tile_grey_metal"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Light.glb" id="3_ceiling_light"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Lamp.glb" id="4_floor_lamp"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Light_White.glb" id="5_wall_light_white"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Corridor_Boundary_4x8.glb" id="6_corridor_boundary_4x8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
-size = Vector3(4, 0.4, 8)
+size = Vector3(8, 0.4, 8)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
-size = Vector3(0.3, 4, 8)
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
 
-[node name="CorridorModule" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
 
-; ── Estructura del pasillo (suelo, paredes y techo) ──
-[node name="Shell" type="Node3D" parent="."]
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
 
-[node name="Corridor" parent="Shell" instance=ExtResource("1_corridor")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="corridor_module" type="Node3D"]
 
-; La pieza del pack no incluye suelo (solo paredes y techo): se añade con
-; baldosas de la vía central.
-[node name="PathFloor_0" parent="Shell" instance=ExtResource("2_path")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+; ── Suelo ──
+[node name="Floor" type="Node3D" parent="."]
 
-[node name="PathFloor_1" parent="Shell" instance=ExtResource("2_path")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+[node name="Tile_0" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 0, -2.0)
 
-; ── Luces de pasillo ──
+[node name="Tile_1" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 0, 2.0)
+
+[node name="Tile_2" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0, -2.0)
+
+[node name="Tile_3" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0, 2.0)
+
+[node name="Path_0" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Path_1" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Path_2" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Path_3" parent="Floor" instance=ExtResource("1_floor_mid_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+; ── Techo y luminarias ──
+[node name="Ceiling" type="Node3D" parent="."]
+
+[node name="Tile_1" parent="Ceiling" instance=ExtResource("2_ceiling_tile_grey_metal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 0, 2.0)
+
+[node name="Tile_2" parent="Ceiling" instance=ExtResource("2_ceiling_tile_grey_metal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0, -2.0)
+
+[node name="Lamp_0" parent="Ceiling" instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 3.66, -2.0)
+
+[node name="Lamp_3" parent="Ceiling" instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 3.66, 2.0)
+
+; ── Luces ──
 [node name="Lights" type="Node3D" parent="."]
 
 [node name="Light_0" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -2)
-light_color = Color(0.9, 0.95, 1, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, -2)
+light_color = Color(0.95, 0.97, 1, 1)
 light_energy = 1.2
-omni_range = 7.0
+omni_range = 11.0
 
 [node name="Light_1" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 2)
-light_color = Color(0.9, 0.95, 1, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, 2)
+light_color = Color(0.95, 0.97, 1, 1)
 light_energy = 1.2
-omni_range = 7.0
+omni_range = 11.0
+
+; ── Paredes ──
+[node name="Walls" type="Node3D" parent="."]
+
+; ── Estructura (pieza cerrada del pack) ──
+[node name="Shell" type="Node3D" parent="."]
+
+[node name="Corridor_0" parent="Shell" instance=ExtResource("6_corridor_boundary_4x8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.09, 0, 0)
+
+[node name="Corridor_1" parent="Shell" instance=ExtResource("6_corridor_boundary_4x8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.09, 0, 0)
 
 ; ── Mobiliario ──
 [node name="Props" type="Node3D" parent="."]
 
-; Lámparas de pie (giradas para que el brazo apunte a la pared).
-[node name="FloorLamp_0" parent="Props" instance=ExtResource("3_floorlamp")]
+[node name="FloorLamp_0" parent="Props" instance=ExtResource("4_floor_lamp")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.2, 0.16, -2)
 
-[node name="FloorLamp_1" parent="Props" instance=ExtResource("3_floorlamp")]
+[node name="FloorLamp_1" parent="Props" instance=ExtResource("4_floor_lamp")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.2, 0.16, 2)
 
-; Apliques de pared.
-[node name="WallLight_0" parent="Props" instance=ExtResource("4_walllight")]
+[node name="WallLight_0" parent="Props" instance=ExtResource("5_wall_light_white")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.2, 0)
 
-[node name="WallLight_1" parent="Props" instance=ExtResource("4_walllight")]
+[node name="WallLight_1" parent="Props" instance=ExtResource("5_wall_light_white")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.2, 0)
 
 ; ── Colisión invisible ──
@@ -75,10 +122,3 @@ collision_mask = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 shape = SubResource("BoxShape3D_floor")
 
-[node name="Wall_East" type="CollisionShape3D" parent="Collision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.95, 2, 0)
-shape = SubResource("BoxShape3D_wall_side")
-
-[node name="Wall_West" type="CollisionShape3D" parent="Collision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95, 2, 0)
-shape = SubResource("BoxShape3D_wall_side")

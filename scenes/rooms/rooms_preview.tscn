@@ -2,8 +2,8 @@
 
 ; Escena de previsualización de los módulos de habitación.
 ; NO forma parte del juego: sirve para revisar y comparar los módulos.
-; Coloca los 9 módulos en fila con un espaciado de 14 m para que no se
-; solapen entre sí.
+; Coloca los 17 módulos en fila con 22 m de separación (los módulos de
+; habitación son de 20 x 20 m y el pasillo de 8 x 8 m).
 
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_cafeteria.tscn" id="1_cafeteria"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_quarters.tscn" id="2_quarters"]
@@ -14,32 +14,36 @@
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_briefing.tscn" id="7_briefing"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_storage.tscn" id="8_storage"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/corridor_module.tscn" id="9_corridor"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/IMG_vestibulo.tscn" id="10_vestibulo"]
 
 [node name="RoomsPreview" type="Node3D"]
 
 [node name="Cafeteria" parent="." instance=ExtResource("1_cafeteria")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 0, 0)
 
 [node name="Quarters" parent="." instance=ExtResource("2_quarters")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -88, 0, 0)
 
 [node name="Generator" parent="." instance=ExtResource("3_generator")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -66, 0, 0)
 
 [node name="Control" parent="." instance=ExtResource("4_control")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, 0, 0)
 
 [node name="Hydroponics" parent="." instance=ExtResource("5_hydroponics")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, 0)
 
 [node name="Medbay" parent="." instance=ExtResource("6_medbay")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Briefing" parent="." instance=ExtResource("7_briefing")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 0)
 
 [node name="Storage" parent="." instance=ExtResource("8_storage")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 0, 0)
 
 [node name="Corridor" parent="." instance=ExtResource("9_corridor")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 0, 0)
+
+[node name="IMG_Vestibulo" parent="." instance=ExtResource("10_vestibulo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 82, 0, 0)

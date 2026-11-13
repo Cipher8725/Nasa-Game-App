@@ -131,12 +131,16 @@ func _is_ignored_path(path: String) -> bool:
 	return false
 
 ## Agrupa por nombre base para no comparar copias del mismo asset entre sí.
+## Todos los paneles de pared comparten grupo: en las esquinas se solapan
+## entre sí por diseño (igual que en el módulo de habitat).
 func _group_of(node: MeshInstance3D) -> String:
 	var path: String = String(node.get_path())
 	if path.contains("/Floor/"):
 		return "Floor"
 	if path.contains("/Ceiling/"):
 		return "Ceiling"
+	if path.contains("/Walls/"):
+		return "Wall"
 	var parts: PackedStringArray = String(node.name).split("_")
 	if parts.size() > 1:
 		return "_".join(parts.slice(0, parts.size() - 1))

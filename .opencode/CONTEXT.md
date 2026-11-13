@@ -223,6 +223,31 @@ sistemas.
   mantener la estructura idéntica entre módulos; los `.tscn` resultantes son
   los que quedan versionados.
 
+### Hito 9 — Módulos ampliados a 20 × 20 m (2026-11-12)
+
+- **Todos los módulos de habitación pasan a 20 × 20 m**, con la **misma retícula
+  que el módulo de habitat** (`scenes/habitat_decor.tscn`):
+  - Suelo: 5 × 5 baldosas de 4 m con centros en −8, −4, 0, 4, 8 (−10..+10).
+  - Paredes: 5 paneles de 4 m por lado centrados en ±9,6 (cara interior ±9,23);
+    la puerta (`Wall_With_Door_Grey`) en la pared sur, en x = 0.
+  - Techo: 21 baldosas + 4 luminarias en (±4, ±4); 8 luminarias en las salas
+    técnicas. Luminarias en y = 3,66 y omni en y = 3,45.
+  - Colisión: caja de suelo (20 × 0,4 × 20) y una por panel; la puerta con
+    dos tramos para dejar un hueco de 1,6 m.
+- **MobiliarioAmpliado** en los 17 módulos: ~90 mallas por habitación (el
+  módulo de habitat tiene ~110), con más muebles y repartidos por los 400 m².
+- **Excepción**: `corridor_module` pasa a 8 × 8 m (dos tramos de
+  `Corridor_Boundary_4x8` del pack) porque su función es conectar, no alojar.
+- Nuevas reglas de colocación que quedaron fijadas:
+  - Los **paneles de pared comparten grupo** en el test: en las esquinas se
+    solapan entre sí por diseño (igual que en habitat).
+  - Las **piezas cerradas** (tramos de pasillo) van en el nodo `Shell` y el
+    test las ignora: su AABB engloba el módulo y daría solapes falsos.
+  - Las **lostas grandes de suelo** (`Floor_Command_Large`,
+    `Floor_Medbay_Large`) van en el nodo `Floor` como decals (son 8 × 8 m y no
+    cubren un módulo de 20 × 20 m).
+- `rooms_preview.tscn` actualizado a 22 m de separación entre módulos.
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -447,4 +472,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 8 (módulos IMG_* recreados desde assets/IMG) completado.*
+*Actualizado: 2026-11-12 — Hito 9 (módulos ampliados a 20 x 20 m, igual que el habitat) completado.*
