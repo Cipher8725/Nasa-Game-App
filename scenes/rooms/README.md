@@ -22,6 +22,31 @@ que se pueden colocar en el mapa cuando se amplíe.
 `rooms_preview.tscn` coloca los 9 módulos en fila (espaciado 14 m) para
 compararlos de un vistazo. **No forma parte del juego.**
 
+## Módulos `IMG_*` (recreados desde `assets/IMG/`)
+
+Segundo juego de módulos, recreado a partir de las **fotos de referencia** que
+hay en `assets/IMG/` (renders del pack Molten Maps). Misma convención que los
+anteriores, con el contenido y los colores que aparecen en cada foto:
+
+| Escena | Referencia | Habitación identificada | Contenido |
+|--------|------------|------------------------|-----------|
+| `IMG_vestibulo.tscn` | `6bDelJ.jpg` | Vestíbulo / módulo de acceso | Pantalla grande en la pared oeste, puesto de control a escala, pila de 6 baterías verdes, ventanal de cristal y escalera de servicio (`Ramp_Grey`) al este |
+| `IMG_sala_de_mando.tscn` | `pGXT9C.jpg` | Sala de mando | `Orrery` central con el holograma, suelo `Floor_Metal_Circles`, 3 puestos de trabajo con lámpara, `Command_Wall`, ventanas de cristal |
+| `IMG_sala_del_generador.tscn` | `PjBOyt.jpg` | Sala del generador | Paredes `Wall_Red`, generador naranja, baterías verdes, franja de peligro, ventana verde, panel de estado, escalera de servicio |
+| `IMG_enfermeria.tscn` | `9tMILo.jpg` | Enfermería | 4 camas `Bunk_Single_Green` + litera doble, paredes `Wall_Green`, biomonitor y alfombra verde |
+| `IMG_criotanque.tscn` | `bK2PlK.jpg` | Criotanque | 3 cápsulas `Cryo_Tube_ON` encendidas y 1 apagada, paredes `Wall_Blue`, ventana azul, apliques y biomonitor rojo |
+| `IMG_cuartos.tscn` | `DnG84u.jpg` | Cuartos | Litera doble y literas `Bunk_Single_Blue`, panel rojo de acento, tablero de ajedrez, silla y apliques |
+| `IMG_sala_de_reuniones.tscn` | `S4lJ0w.jpg` | Sala de reuniones | Mesa octogonal con 8 sillas, 2 pantallas de briefing, pantallas de pared y ventanas azules |
+| `IMG_sala_del_orrery.tscn` | `vnoCXw.jpg` | Sala del orrery | `Orrery` con holograma magenta, banco largo (`Meeting_Table`), monitor grande, displays y lámpara de pie |
+
+Notas:
+
+- Las **franjas de peligro** (`Hazard_Floor_1`) van en el nodo `Floor`, no en
+  `Props`: son superficie de apoyo y los muebles se apoyan encima.
+- Las **escaleras** (`Ramp_Grey`) son piezas de 4 × 4 m con paredes propias, así
+  que van **fuera** del módulo (justo al otro lado del ventanal), como se ven
+  en las fotos.
+
 ## Conción de montaje
 
 Todos los módulos siguen las mismas reglas, para que encajen entre sí:
@@ -77,10 +102,10 @@ una cuadrícula, la separación es la misma en X.
 
 ```powershell
 $godot = "H:\Godot V4.7.2\Godot_v4.7.2-stable_win64_console.exe"
-& $godot --headless --path . --quit-after 3000 "res://tests/room_collision_test.tscn"
+& $godot --headless --path . --quit-after 4000 "res://tests/room_collision_test.tscn"
 ```
 
-El test instancia los 9 módulos, comprueba que tienen la estructura mínima
+El test instancia los 17 módulos, comprueba que tienen la estructura mínima
 (suelo, paredes, props, luces y colisión) y que **ningún mueble se solapa con
 otro** (AABB, ignorando copias del mismo asset y las superficies de apoyo).
 Falla si algún solape supera 0,05 m³.

@@ -1,0 +1,166 @@
+[gd_scene load_steps=19 format=3]
+
+; ─────────────────────────────────────────────────────────────
+; IMG_CUARTOS  (referencia: assets/IMG/DnG84u.jpg)
+; ─────────────────────────────────────────────────────────────
+; Módulo recreado a partir de la referencia: assets/IMG/DnG84u.jpg
+;
+; CONVENCIÓN: ver scenes/rooms/README.md (origen en el centro del suelo,
+; paredes por fuera, puerta en -Z, techo a y = 4, colisión invisible).
+
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Metal_Square.glb" id="1_floor_metal_square"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling_tile_grey_metal"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Light.glb" id="3_ceiling_light"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Grey.glb" id="4_wall_grey"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_With_Door_Grey.glb" id="5_wall_with_door_grey"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Red.glb" id="6_wall_red"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Bunk_Single_Blue.glb" id="7_bunk_single_blue"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Bunk_Double_Blue.glb" id="8_bunk_double_blue"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/End_Table.glb" id="9_end_table"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/3D_Chess_Board.glb" id="10_3d_chess_board"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Chair_1.glb" id="11_chair_1"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Off.glb" id="12_wall_display_off"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Light_White.glb" id="13_wall_light_white"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="14_plant_1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8, 0.4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
+
+[node name="IMG_cuartos" type="Node3D"]
+
+; ── Suelo ──
+[node name="Floor" type="Node3D" parent="."]
+
+[node name="Tile_0" parent="Floor" instance=ExtResource("1_floor_metal_square")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Tile_1" parent="Floor" instance=ExtResource("1_floor_metal_square")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+; ── Techo y luminarias ──
+[node name="Ceiling" type="Node3D" parent="."]
+
+[node name="Tile_0" parent="Ceiling" instance=ExtResource("2_ceiling_tile_grey_metal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Tile_1" parent="Ceiling" instance=ExtResource("2_ceiling_tile_grey_metal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Lamp_0" parent="Ceiling" instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, 0)
+
+[node name="Lamp_1" parent="Ceiling" instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, 0)
+
+; ── Luces ──
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, 0)
+light_color = Color(0.72, 0.85, 1, 1)
+light_energy = 1.3
+omni_range = 9.0
+
+[node name="Light_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, 0)
+light_color = Color(0.72, 0.85, 1, 1)
+light_energy = 1.3
+omni_range = 9.0
+
+; ── Paredes ──
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="Wall_North_0" parent="Walls" instance=ExtResource("4_wall_grey")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2.37)
+
+[node name="Wall_North_1" parent="Walls" instance=ExtResource("4_wall_grey")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2.37)
+
+[node name="Wall_South_0" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2.37)
+
+[node name="Wall_South_1" parent="Walls" instance=ExtResource("6_wall_red")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2.37)
+
+[node name="Wall_East_0" parent="Walls" instance=ExtResource("4_wall_grey")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.37, 0, 0)
+
+[node name="Wall_West_0" parent="Walls" instance=ExtResource("4_wall_grey")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, 0)
+
+; ── Mobiliario ──
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Bunk_0" parent="Props" instance=ExtResource("7_bunk_single_blue")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -2.7, 0, 1.2)
+
+[node name="Bunk_1" parent="Props" instance=ExtResource("7_bunk_single_blue")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0.2, 0, 1.2)
+
+[node name="BunkDouble" parent="Props" instance=ExtResource("8_bunk_double_blue")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2.3, 0, -0.75)
+
+[node name="EndTable" parent="Props" instance=ExtResource("9_end_table")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0, -1.2)
+
+[node name="ChessBoard" parent="Props" instance=ExtResource("10_3d_chess_board")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0.92, -1.2)
+
+[node name="Chair" parent="Props" instance=ExtResource("11_chair_1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, -1.3)
+
+[node name="Display" parent="Props" instance=ExtResource("12_wall_display_off")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 1.9)
+
+[node name="WallLight" parent="Props" instance=ExtResource("13_wall_light_white")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 1.9)
+
+[node name="Plant" parent="Props" instance=ExtResource("14_plant_1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, -1.4)
+
+; ── Colisión invisible ──
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Wall_North_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 2, 2.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_North_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 2, 2.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_South_0_a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 2, -2.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_0_b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6000000000000001, 2, -2.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 2, -2.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_East_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.37, 2, 0.0)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, 0.0)
+shape = SubResource("BoxShape3D_wall_z")
+

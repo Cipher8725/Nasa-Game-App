@@ -202,6 +202,27 @@ sistemas.
 - **Pendiente de decisión del arquitecto**: los módulos todavía no se
   instancian en el mapa; falta que indique dónde y con qué orientación.
 
+### Hito 8 — Módulos IMG_ recreados desde `assets/IMG/` (2026-11-12)
+
+- **8 módulos nuevos** en `scenes/rooms/`, recreados a partir de las fotos de
+  referencia de `assets/IMG/` (renders del pack Molten Maps):
+  `IMG_vestibulo` (6bDelJ), `IMG_sala_de_mando` (pGXT9C),
+  `IMG_sala_del_generador` (PjBOyt), `IMG_enfermeria` (9tMILo),
+  `IMG_criotanque` (bK2PlK), `IMG_cuartos` (DnG84u),
+  `IMG_sala_de_reuniones` (S4lJ0w) y `IMG_sala_del_orrery` (vnoCXw).
+- Misma convención que el Hito 7 (origen en el centro, paredes fuera, puerta
+  en −Z, techo a y = 4, omni por luminaria, colisión invisible).
+- **Dos criterios de colocación** que quedaron fijados:
+  - Las franjas de peligro (`Hazard_Floor_1`) van en el nodo `Floor`: son
+    superficie de apoyo, igual que las baldosas.
+  - Las escaleras (`Ramp_Grey`) son piezas de 4 × 4 m con paredes propias, así
+    que van **fuera** del módulo, junto al ventanal, como en las fotos.
+- `tests/room_collision_test.tscn` valida ahora **17 módulos** (9 + 8) en
+  total: estructura mínima + cero solapes.
+- Las 8 escenas se generaron con un script temporal (fuera del repo) para
+  mantener la estructura idéntica entre módulos; los `.tscn` resultantes son
+  los que quedan versionados.
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -426,4 +447,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 7 (9 módulos de habitación modulares con Molten Maps) completado.*
+*Actualizado: 2026-11-12 — Hito 8 (módulos IMG_* recreados desde assets/IMG) completado.*

@@ -25,6 +25,15 @@ const ROOMS: PackedStringArray = [
 	"res://scenes/rooms/room_briefing.tscn",
 	"res://scenes/rooms/room_storage.tscn",
 	"res://scenes/rooms/corridor_module.tscn",
+	# Módulos recreados a partir de las referencias de assets/IMG
+	"res://scenes/rooms/IMG_vestibulo.tscn",
+	"res://scenes/rooms/IMG_sala_de_mando.tscn",
+	"res://scenes/rooms/IMG_sala_del_generador.tscn",
+	"res://scenes/rooms/IMG_enfermeria.tscn",
+	"res://scenes/rooms/IMG_criotanque.tscn",
+	"res://scenes/rooms/IMG_cuartos.tscn",
+	"res://scenes/rooms/IMG_sala_de_reuniones.tscn",
+	"res://scenes/rooms/IMG_sala_del_orrery.tscn",
 ]
 
 ## Subárboles que no participan en la comprobación de solapes.
