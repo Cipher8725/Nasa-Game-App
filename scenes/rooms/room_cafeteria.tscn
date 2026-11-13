@@ -1,0 +1,250 @@
+[gd_scene load_steps=19 format=3]
+
+; ─────────────────────────────────────────────────────────────
+; MÓDULO HABITACIONAL: COMEDOR (8 x 8 m)
+; ─────────────────────────────────────────────────────────────
+; Habitación modular construible con piezas de Molten Maps.
+;
+; CONVENCIÓN DE TODOS LOS MÓDULOS (ver scenes/rooms/README.md):
+;  - El origen del nodo es el CENTRO de la zona de suelo.
+;  - El suelo ocupa de -4 a +4 en X y en Z (baldosas de 4 m).
+;  - Las paredes van POR FUERA del suelo, centradas en x/z = ±4.37,
+;    con 0.74 m de grosor: su cara interior queda en ±4.00.
+;  - La puerta (Wall_With_Door_Grey) va siempre en la pared -Z.
+;  - El techo cierra a y = 4 (baldosas nativas en 3.86..4.01) y las
+;    luminarias cuelgan de él a y = 3.66 (sin z-fighting).
+;  - Colisión invisible en el nodo "Collision" (suelo + una por panel).
+
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Tile_Carpet_Grey.glb" id="1_floor"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Light.glb" id="3_light"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Orange.glb" id="4_wall"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_With_Door_Grey.glb" id="5_door"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Meeting_Table.glb" id="6_table"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Cafeteria_Table.glb" id="7_cafeteria"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/End_Table.glb" id="8_endtable"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Chair_1.glb" id="9_chair"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Table_Light.glb" id="10_tablelight"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Lamp.glb" id="11_floorlamp"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="12_plant"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Blue.glb" id="13_display"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Orange.glb" id="14_display2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8, 0.4, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
+
+[node name="RoomCafeteria" type="Node3D"]
+
+; ── Suelo: alfombra gris 4 x 4 baldosas ──
+[node name="Floor" type="Node3D" parent="."]
+
+[node name="Tile_0_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Tile_1_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Tile_0_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Tile_1_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+; ── Techo: 4 baldosas + 4 luminarias colgantes ──
+[node name="Ceiling" type="Node3D" parent="."]
+
+[node name="Tile_0_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Tile_1_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Tile_0_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Tile_1_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+[node name="Lamp_0_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, -2)
+
+[node name="Lamp_1_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, -2)
+
+[node name="Lamp_0_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, 2)
+
+[node name="Lamp_1_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, 2)
+
+; ── Luces: una omni por luminaria ──
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light_0_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, -2)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.5
+omni_range = 9.0
+
+[node name="Light_1_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, -2)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.5
+omni_range = 9.0
+
+[node name="Light_0_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, 2)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.5
+omni_range = 9.0
+
+[node name="Light_1_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, 2)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.5
+omni_range = 9.0
+
+; ── Paredes: 8 paneles; la puerta está en la pared -Z (x = -2) ──
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="Wall_North_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4.37)
+
+[node name="Wall_North_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 4.37)
+
+[node name="Wall_South_0" parent="Walls" instance=ExtResource("5_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -4.37)
+
+[node name="Wall_South_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -4.37)
+
+[node name="Wall_East_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.37, 0, -2)
+
+[node name="Wall_East_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.37, 0, 2)
+
+[node name="Wall_West_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, -2)
+
+[node name="Wall_West_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, 2)
+
+; ── Mobiliario ──
+[node name="Props" type="Node3D" parent="."]
+
+; Mesa grande central con seis sillas.
+[node name="MeetingTable" parent="Props" instance=ExtResource("6_table")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2)
+
+[node name="Chair_0" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0, -3)
+
+[node name="Chair_1" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
+
+[node name="Chair_2" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0, -3)
+
+[node name="Chair_3" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.2, 0, 0.6)
+
+[node name="Chair_4" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0.6)
+
+[node name="Chair_5" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.2, 0, 0.6)
+
+; Mesa de cafetería con dos sillas y lámpara de mesa.
+[node name="CafeteriaTable" parent="Props" instance=ExtResource("7_cafeteria")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.4)
+
+[node name="Chair_6" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.6, 0, 2.4)
+
+[node name="Chair_7" parent="Props" instance=ExtResource("9_chair")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, 2.4)
+
+[node name="TableLight" parent="Props" instance=ExtResource("10_tablelight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 2.4)
+
+; Mesitas auxiliares.
+[node name="EndTable_0" parent="Props" instance=ExtResource("8_endtable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 2.4)
+
+[node name="EndTable_1" parent="Props" instance=ExtResource("8_endtable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 2.4)
+
+; Lámpara de pie junto a la pared este (girada para iluminar hacia dentro).
+[node name="FloorLamp" parent="Props" instance=ExtResource("11_floorlamp")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.6, 0, 0)
+
+; Vegetación.
+[node name="Plant_0" parent="Props" instance=ExtResource("12_plant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, 3.4)
+
+[node name="Plant_1" parent="Props" instance=ExtResource("12_plant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0, 3.4)
+
+; Pantallas de pared: menú (norte) y aviso (este).
+[node name="Display_Menu" parent="Props" instance=ExtResource("13_display")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.9)
+
+[node name="Display_Notice" parent="Props" instance=ExtResource("14_display2")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.9, 0, -2.6)
+
+; ── Colisión invisible: suelo y paneles ──
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Wall_North_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_North_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+; La puerta se modela con dos tramos para dejar el hueco libre.
+[node name="Wall_South_0a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 2, -4.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_0b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2, -4.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, -4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_East_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.37, 2, -2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_East_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.37, 2, 2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, -2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, 2)
+shape = SubResource("BoxShape3D_wall_z")

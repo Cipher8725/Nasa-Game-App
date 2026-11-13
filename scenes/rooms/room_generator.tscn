@@ -1,0 +1,214 @@
+[gd_scene load_steps=19 format=3]
+
+; ─────────────────────────────────────────────────────────────
+; MÓDULO HABITACIONAL: SALA DEL GENERADOR (8 x 8 m)
+; ─────────────────────────────────────────────────────────────
+; Machine room: generador principal, pilas, baterías y tubería.
+; Convención de módulos: ver scenes/rooms/README.md.
+
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Metal_Square_Grate.glb" id="1_floor"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Light.glb" id="3_light"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Grey.glb" id="4_wall"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_With_Door_Grey.glb" id="5_door"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Generator.glb" id="6_generator"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Generator_Pile_Small.glb" id="7_pile"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Grey.glb" id="8_battery_grey"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Green.glb" id="9_battery_green"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Orange.glb" id="10_battery_orange"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Red.glb" id="11_battery_red"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Pipe.glb" id="12_pipe"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Air_Con.glb" id="13_aircon"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Orange.glb" id="14_display"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8, 0.4, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
+
+[node name="RoomGenerator" type="Node3D"]
+
+; ── Suelo: rejilla metálica (rejilla de ventilación de la sala de máquinas) ──
+[node name="Floor" type="Node3D" parent="."]
+
+[node name="Tile_0_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Tile_1_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Tile_0_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Tile_1_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+; ── Techo y luminarias ──
+[node name="Ceiling" type="Node3D" parent="."]
+
+[node name="Tile_0_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Tile_1_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Tile_0_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Tile_1_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+[node name="Lamp_0_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, -2)
+
+[node name="Lamp_1_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, -2)
+
+[node name="Lamp_0_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, 2)
+
+[node name="Lamp_1_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, 2)
+
+; ── Luces: tono frío de sala técnica ──
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light_0_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, -2)
+light_color = Color(0.82, 0.9, 1, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+[node name="Light_1_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, -2)
+light_color = Color(0.82, 0.9, 1, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+[node name="Light_0_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, 2)
+light_color = Color(0.82, 0.9, 1, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+[node name="Light_1_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, 2)
+light_color = Color(0.82, 0.9, 1, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+; ── Paredes ──
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="Wall_North_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4.37)
+
+[node name="Wall_North_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 4.37)
+
+[node name="Wall_South_0" parent="Walls" instance=ExtResource("5_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -4.37)
+
+[node name="Wall_South_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -4.37)
+
+[node name="Wall_East_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.37, 0, -2)
+
+[node name="Wall_East_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.37, 0, 2)
+
+[node name="Wall_West_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, -2)
+
+[node name="Wall_West_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, 2)
+
+; ── Maquinaria ──
+[node name="Props" type="Node3D" parent="."]
+
+; Generador principal (4,76 x 4,87 m) y pila auxiliar.
+[node name="Generator" parent="Props" instance=ExtResource("6_generator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, 1.2)
+
+[node name="GeneratorPile" parent="Props" instance=ExtResource("7_pile")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9, 0, 1.6)
+
+; Baterías de repuesto alineadas contra la pared oeste.
+[node name="Battery_Grey" parent="Props" instance=ExtResource("8_battery_grey")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -3.4)
+
+[node name="Battery_Green" parent="Props" instance=ExtResource("9_battery_green")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -2.6)
+
+[node name="Battery_Orange" parent="Props" instance=ExtResource("10_battery_orange")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -1.8)
+
+[node name="Battery_Red" parent="Props" instance=ExtResource("11_battery_red")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, -1)
+
+; Tubería y aire acondicionado en las paredes.
+[node name="Pipe_0" parent="Props" instance=ExtResource("12_pipe")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.5, 0, -1.8)
+
+[node name="Pipe_1" parent="Props" instance=ExtResource("12_pipe")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.5, 0, -3.3)
+
+[node name="AirCon" parent="Props" instance=ExtResource("13_aircon")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -3.65)
+
+; Panel de estado del generador.
+[node name="Display" parent="Props" instance=ExtResource("14_display")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -3.85)
+
+; ── Colisión invisible ──
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Wall_North_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_North_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_South_0a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 2, -4.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_0b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2, -4.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, -4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_East_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.37, 2, -2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_East_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.37, 2, 2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, -2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, 2)
+shape = SubResource("BoxShape3D_wall_z")

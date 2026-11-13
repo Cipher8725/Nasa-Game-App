@@ -1,0 +1,164 @@
+[gd_scene load_steps=18 format=3]
+
+; ─────────────────────────────────────────────────────────────
+; MÓDULO HABITACIONAL: ENFERMERÍA Y CRIOTANQUE (8 x 4 m)
+; ─────────────────────────────────────────────────────────────
+; Sala médica: criotanques, cápsula de descanso y biomonitores.
+; Convención de módulos: scenes/rooms/README.md.
+
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Medbay.glb" id="1_floor"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Light.glb" id="3_light"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Grey.glb" id="4_wall"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_With_Door_Grey.glb" id="5_door"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Cryo_Tube_ON.glb" id="6_cryo_on"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Cryo_Tube_OFF.glb" id="7_cryo_off"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Sleeper Casket Static.glb" id="8_casket"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/BioMonitor_Blue.glb" id="9_bio_blue"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/BioMonitor_Green.glb" id="10_bio_green"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/3D_Chess_Board.glb" id="11_chess"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/End_Table.glb" id="12_endtable"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Blue.glb" id="13_display"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8, 0.4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
+
+[node name="RoomMedbay" type="Node3D"]
+
+; ── Suelo médico ──
+[node name="Floor" type="Node3D" parent="."]
+
+[node name="Tile_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Tile_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+; ── Techo y luminarias ──
+[node name="Ceiling" type="Node3D" parent="."]
+
+[node name="Tile_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="Tile_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Lamp_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, 0)
+
+[node name="Lamp_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, 0)
+
+; ── Luces: blanco clínico ──
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, 0)
+light_color = Color(0.95, 0.98, 1, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="Light_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, 0)
+light_color = Color(0.95, 0.98, 1, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+; ── Paredes ──
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="Wall_North_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2.37)
+
+[node name="Wall_North_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2.37)
+
+[node name="Wall_South_0" parent="Walls" instance=ExtResource("5_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2.37)
+
+[node name="Wall_South_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2.37)
+
+[node name="Wall_East_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.37, 0, 0)
+
+[node name="Wall_West_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, 0)
+
+; ── Equipamiento médico ──
+[node name="Props" type="Node3D" parent="."]
+
+; Criotanques: uno activo y otro apagado.
+[node name="CryoTube_On" parent="Props" instance=ExtResource("6_cryo_on")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.95, 0, 0.6)
+
+[node name="CryoTube_Off" parent="Props" instance=ExtResource("7_cryo_off")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, 0.6)
+
+; Cápsula de descanso.
+[node name="SleeperCasket" parent="Props" instance=ExtResource("8_casket")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0, -0.45)
+
+; Biomonitores.
+[node name="BioMonitor_Blue" parent="Props" instance=ExtResource("9_bio_blue")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.45, 0, 1.2)
+
+[node name="BioMonitor_Green" parent="Props" instance=ExtResource("10_bio_green")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, 1.4)
+
+; Tablero de ajedrez y mesita para la vigilia.
+[node name="ChessBoard" parent="Props" instance=ExtResource("11_chess")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, -1.4)
+
+[node name="EndTable" parent="Props" instance=ExtResource("12_endtable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.55)
+
+; Panel de constantes vitales.
+[node name="Display" parent="Props" instance=ExtResource("13_display")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 1.9)
+
+; ── Colisión invisible ──
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Wall_North_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 2.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_North_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 2.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_South_0a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 2, -2.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_0b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2, -2.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, -2.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_East_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.37, 2, 0)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, 0)
+shape = SubResource("BoxShape3D_wall_z")

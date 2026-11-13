@@ -1,0 +1,221 @@
+[gd_scene load_steps=18 format=3]
+
+; ─────────────────────────────────────────────────────────────
+; MÓDULO HABITACIONAL: HIDROPONÍA (8 x 8 m)
+; ─────────────────────────────────────────────────────────────
+; Cultivos hidropónicos con luminaria de crecimiento, bancales y maderas.
+; La pared este lleva cristal (Wall_Glass_Green, 0,32 m de grosor).
+; Convención de módulos: scenes/rooms/README.md.
+
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hydroponics_Floor.glb" id="1_floor"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Light.glb" id="3_light"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Green.glb" id="4_wall"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_With_Door_Grey.glb" id="5_door"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Glass_Green.glb" id="6_glass"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hydroponics_Full.glb" id="7_hydro_full"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hydroponics_Empty.glb" id="8_hydro_empty"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hydroponic_Bay.glb" id="9_bay"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hydroponics_Lamp.glb" id="10_hydro_lamp"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="11_plant"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Green.glb" id="12_display"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8, 0.4, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_glass"]
+size = Vector3(0.32, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
+
+[node name="RoomHydroponics" type="Node3D"]
+
+; ── Suelo: bandeja de hidroponía ──
+[node name="Floor" type="Node3D" parent="."]
+
+[node name="Tile_0_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Tile_1_0" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Tile_0_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Tile_1_1" parent="Floor" instance=ExtResource("1_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+; ── Techo y luminarias ──
+[node name="Ceiling" type="Node3D" parent="."]
+
+[node name="Tile_0_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Tile_1_0" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+
+[node name="Tile_0_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+
+[node name="Tile_1_1" parent="Ceiling" instance=ExtResource("2_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+[node name="Lamp_0_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, -2)
+
+[node name="Lamp_1_0" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, -2)
+
+[node name="Lamp_0_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.66, 2)
+
+[node name="Lamp_1_1" parent="Ceiling" instance=ExtResource("3_light")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.66, 2)
+
+; ── Luces: verde suave de cultivo ──
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light_0_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, -2)
+light_color = Color(0.8, 1, 0.85, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+[node name="Light_1_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, -2)
+light_color = Color(0.8, 1, 0.85, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+[node name="Light_0_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 3.45, 2)
+light_color = Color(0.8, 1, 0.85, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+[node name="Light_1_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.45, 2)
+light_color = Color(0.8, 1, 0.85, 1)
+light_energy = 1.4
+omni_range = 9.0
+
+; ── Paredes (la este es de cristal) ──
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="Wall_North_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4.37)
+
+[node name="Wall_North_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 4.37)
+
+[node name="Wall_South_0" parent="Walls" instance=ExtResource("5_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -4.37)
+
+[node name="Wall_South_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -4.37)
+
+; El cristal es más fino: se acerca a 0,16 m de la cara interior.
+[node name="Wall_East_0" parent="Walls" instance=ExtResource("6_glass")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.16, 0, -2)
+
+[node name="Wall_East_1" parent="Walls" instance=ExtResource("6_glass")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.16, 0, 2)
+
+[node name="Wall_West_0" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, -2)
+
+[node name="Wall_West_1" parent="Walls" instance=ExtResource("4_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.37, 0, 2)
+
+; ── Cultivos ──
+[node name="Props" type="Node3D" parent="."]
+
+; Luminaria de crecimiento pegada a la pared oeste (3 m de largo).
+[node name="HydroLamp" parent="Props" instance=ExtResource("10_hydro_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 0, 1.1)
+
+; Cultivos con plantas y bancales vacíos.
+[node name="Hydroponics_Full_0" parent="Props" instance=ExtResource("7_hydro_full")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0, 1.2)
+
+[node name="Hydroponics_Full_1" parent="Props" instance=ExtResource("7_hydro_full")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0, -1.2)
+
+[node name="Hydroponics_Empty" parent="Props" instance=ExtResource("8_hydro_empty")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, 1.4)
+
+; Bancales de cultivo.
+[node name="Bay_0" parent="Props" instance=ExtResource("9_bay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, -1.4)
+
+[node name="Bay_1" parent="Props" instance=ExtResource("9_bay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, 2.8)
+
+[node name="Bay_2" parent="Props" instance=ExtResource("9_bay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -2.6)
+
+; Plantas decorativas.
+[node name="Plant_0" parent="Props" instance=ExtResource("11_plant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, -0.6)
+
+[node name="Plant_1" parent="Props" instance=ExtResource("11_plant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 3.3)
+
+[node name="Plant_2" parent="Props" instance=ExtResource("11_plant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.5)
+
+; Panel de control del cultivo.
+[node name="Display" parent="Props" instance=ExtResource("12_display")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 3.9)
+
+; ── Colisión invisible ──
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Wall_North_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_North_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_South_0a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 2, -4.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_0b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 2, -4.37)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_South_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, -4.37)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="Wall_East_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.16, 2, -2)
+shape = SubResource("BoxShape3D_wall_glass")
+
+[node name="Wall_East_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.16, 2, 2)
+shape = SubResource("BoxShape3D_wall_glass")
+
+[node name="Wall_West_0" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, -2)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_West_1" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.37, 2, 2)
+shape = SubResource("BoxShape3D_wall_z")

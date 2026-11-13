@@ -1,0 +1,45 @@
+[gd_scene load_steps=11 format=3]
+
+; Escena de previsualización de los módulos de habitación.
+; NO forma parte del juego: sirve para revisar y comparar los módulos.
+; Coloca los 9 módulos en fila con un espaciado de 14 m para que no se
+; solapen entre sí.
+
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_cafeteria.tscn" id="1_cafeteria"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_quarters.tscn" id="2_quarters"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_generator.tscn" id="3_generator"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_control.tscn" id="4_control"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_hydroponics.tscn" id="5_hydroponics"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_medbay.tscn" id="6_medbay"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_briefing.tscn" id="7_briefing"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/room_storage.tscn" id="8_storage"]
+[ext_resource type="PackedScene" path="res://scenes/rooms/corridor_module.tscn" id="9_corridor"]
+
+[node name="RoomsPreview" type="Node3D"]
+
+[node name="Cafeteria" parent="." instance=ExtResource("1_cafeteria")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 0)
+
+[node name="Quarters" parent="." instance=ExtResource("2_quarters")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 0, 0)
+
+[node name="Generator" parent="." instance=ExtResource("3_generator")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 0, 0)
+
+[node name="Control" parent="." instance=ExtResource("4_control")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 0)
+
+[node name="Hydroponics" parent="." instance=ExtResource("5_hydroponics")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Medbay" parent="." instance=ExtResource("6_medbay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 0)
+
+[node name="Briefing" parent="." instance=ExtResource("7_briefing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+
+[node name="Storage" parent="." instance=ExtResource("8_storage")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0, 0)
+
+[node name="Corridor" parent="." instance=ExtResource("9_corridor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, 0, 0)

@@ -1,0 +1,84 @@
+[gd_scene load_steps=7 format=3]
+
+; ─────────────────────────────────────────────────────────────
+; MÓDULO HABITACIONAL: PASILLO (4 x 8 m)
+; ─────────────────────────────────────────────────────────────
+; Tramo de pasillo con suelo, techo y paredes (Corridor_Boundary_4x8).
+; Módulo de unión: se coloca en línea entre habitaciones.
+; Convención de módulos: scenes/rooms/README.md.
+
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Corridor_Boundary_4x8.glb" id="1_corridor"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Mid_Path.glb" id="2_path"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Lamp.glb" id="3_floorlamp"]
+[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Light_White.glb" id="4_walllight"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(4, 0.4, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_side"]
+size = Vector3(0.3, 4, 8)
+
+[node name="CorridorModule" type="Node3D"]
+
+; ── Estructura del pasillo (suelo, paredes y techo) ──
+[node name="Shell" type="Node3D" parent="."]
+
+[node name="Corridor" parent="Shell" instance=ExtResource("1_corridor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+; La pieza del pack no incluye suelo (solo paredes y techo): se añade con
+; baldosas de la vía central.
+[node name="PathFloor_0" parent="Shell" instance=ExtResource("2_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
+[node name="PathFloor_1" parent="Shell" instance=ExtResource("2_path")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+; ── Luces de pasillo ──
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light_0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -2)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 1.2
+omni_range = 7.0
+
+[node name="Light_1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 2)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 1.2
+omni_range = 7.0
+
+; ── Mobiliario ──
+[node name="Props" type="Node3D" parent="."]
+
+; Lámparas de pie (giradas para que el brazo apunte a la pared).
+[node name="FloorLamp_0" parent="Props" instance=ExtResource("3_floorlamp")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.2, 0.16, -2)
+
+[node name="FloorLamp_1" parent="Props" instance=ExtResource("3_floorlamp")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 1.2, 0.16, 2)
+
+; Apliques de pared.
+[node name="WallLight_0" parent="Props" instance=ExtResource("4_walllight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.2, 0)
+
+[node name="WallLight_1" parent="Props" instance=ExtResource("4_walllight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2.2, 0)
+
+; ── Colisión invisible ──
+[node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="FloorShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Wall_East" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.95, 2, 0)
+shape = SubResource("BoxShape3D_wall_side")
+
+[node name="Wall_West" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95, 2, 0)
+shape = SubResource("BoxShape3D_wall_side")

@@ -172,6 +172,36 @@ sistemas.
   integración con la consola) y `tests/interaction_test.gd` reescrito para el
   nuevo flujo. Suite completa: 6 pruebas, todas en verde.
 
+### Hito 7 — Módulos de habitación (2026-11-12)
+
+- **9 módulos nuevos** en `scenes/rooms/`, construidos con piezas de Molten
+  Maps (in situ, sin tocar ninguna escena existente):
+  `room_cafeteria`, `room_quarters`, `room_generator`, `room_control`,
+  `room_hydroponics`, `room_medbay`, `room_briefing`, `room_storage` y
+  `corridor_module`.
+- **Convención de módulos** (documentada en `scenes/rooms/README.md`):
+  - Origen = centro de la zona de suelo; suelo de -4..+4 (8×8) o -2..+2 (8×4).
+  - Paredes **por fuera** del suelo, centradas en `x/z = ±4.37` (`±2.37` en
+    8×4); cara interior en `±4.00`.
+  - **Puerta siempre en la pared −Z** (panel en `x = -2`), para encadenar
+    módulos en filas separadas por pasillos.
+  - Techo a `y = 4`; las luminarias cuelgan en `y = 3.66` (sin z-fighting).
+  - Un `OmniLight3D` por luminaria (`y = 3.45`) con el tono de cada sala.
+  - Colisión invisible en el nodo `Collision`: suelo + un tramo por panel; la
+    puerta se hace con dos tramos para dejar un hueco de 1,6 m.
+- **Trampa de la rejilla**: el `Transform3D` de un `.tscn` se interpreta en
+  **filas**, así que una rotación de 90° invierte el desplazamiento del modelo.
+  Varias piezas del pack tienen el origen descentrado (`Command_Console` va de
+  `z = -1.73` a `3.15`, `Bunk_Double_Grey` de `x = -1.25` a `0.75`): hay que
+  colocar midiendo la AABB real, no suponiendo que el modelo está centrado.
+- **Tests**: nuevo `tests/room_collision_test.tscn` que instancia los 9
+  módulos, valida su estructura y comprueba que ningún mueble se solapa con
+  otro (AABB, umbral 0,05 m³). La suite completa queda en 7 pruebas.
+- `scenes/rooms/rooms_preview.tscn` coloca los 9 módulos en fila para
+  compararlos (no forma parte del juego).
+- **Pendiente de decisión del arquitecto**: los módulos todavía no se
+  instancian en el mapa; falta que indique dónde y con qué orientación.
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -289,6 +319,9 @@ existe en 4.7.2).
 11. **Minijuegos de agua y estructura**: replicar el patrón de oxígeno y
     energía cuando el arquitecto amplíe el mapa e indique las ubicaciones
     exactas de las nuevas consolas (o de los paneles de repairing).
+12. **Colocar los módulos de `scenes/rooms/` en el mapa**: están listos y
+    verificados, pero el arquitecto tiene que indicar dónde va cada uno y con
+    qué orientación (la puerta mira siempre a −Z).
 
 ### Deuda técnica conocida
 
@@ -343,6 +376,7 @@ $root  = "H:\GodotProyects\GodotProyects 4.7.2\na-sa-game"
 & $godot --headless --path $root --quit-after 2000  "res://tests/asset_collision_test.tscn"
 & $godot --headless --path $root --quit-after 2000  "res://tests/physics_test.tscn"
 & $godot --headless --path $root --quit-after 20000 "res://tests/minigame_test.tscn"
+& $godot --headless --path $root --quit-after 3000  "res://tests/room_collision_test.tscn"
 
 # 3. Juego principal
 & $godot --headless --path $root --quit-after 5
@@ -392,4 +426,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 6 (minijuegos de reparación de oxígeno y energía) completado.*
+*Actualizado: 2026-11-12 — Hito 7 (9 módulos de habitación modulares con Molten Maps) completado.*
