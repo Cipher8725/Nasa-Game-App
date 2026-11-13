@@ -84,7 +84,7 @@ func _run() -> void:
 		game.restore_resource(GameManager.RESOURCE_OXYGEN, 50.0)
 		game.restore_resource(GameManager.RESOURCE_ENERGY, 50.0)
 		game.restore_resource(GameManager.RESOURCE_WATER, 50.0)
-		game.restore_resource(GameManager.RESOURCE_STRUCTURE, 50.0)
+		game.restore_resource(GameManager.RESOURCE_SHIELD, 50.0)
 		victory_state_final = game.get_mission_state()
 		if victory_state_final == GameManager.MissionState.COMPLETED or victory_state_final == GameManager.MissionState.FAILED:
 			break

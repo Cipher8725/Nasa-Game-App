@@ -158,10 +158,17 @@ func _find_console(main_scene: Node, resource_type: StringName) -> ResourceConso
 	var habitat: Node = main_scene.get_node_or_null("Habitat")
 	if habitat == null:
 		return null
-	for node: Node in habitat.get_children():
-		var console: ResourceConsole = node as ResourceConsole
+	return _search_console(habitat, resource_type)
+
+## Busca recursivamente una consola por su recurso.
+func _search_console(node: Node, resource_type: StringName) -> ResourceConsole:
+	for child: Node in node.get_children():
+		var console: ResourceConsole = child as ResourceConsole
 		if console != null and console.resource_type == resource_type:
 			return console
+		var found: ResourceConsole = _search_console(child, resource_type)
+		if found != null:
+			return found
 	return null
 
 ## Registra una comprobación y devuelve 1 si falla.

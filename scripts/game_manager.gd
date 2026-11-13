@@ -4,7 +4,7 @@ extends Node
 ## Gestor global de la misión (registrado como Autoload con el nombre "Game").
 ##
 ## Responsabilidades:
-## - Mantener el estado de los recursos vitales (oxígeno, energía, agua, estructura).
+## - Mantener el estado de los recursos vitales (oxígeno, energía, agua y escudo radioactivo).
 ## - Emitir señales para que la UI y el mundo observen el estado (nunca al revés).
 ## - Controlar la máquina de estados de la misión.
 ## - Persistir y recuperar partidas guardadas.
@@ -49,7 +49,7 @@ enum MissionState {
 const RESOURCE_OXYGEN: StringName = &"oxygen"
 const RESOURCE_ENERGY: StringName = &"energy"
 const RESOURCE_WATER: StringName = &"water"
-const RESOURCE_STRUCTURE: StringName = &"structure"
+const RESOURCE_SHIELD: StringName = &"shield"
 
 const EMERGENCY_METEOR: StringName = &"micrometeorito"
 const EMERGENCY_OVERLOAD: StringName = &"sobrecarga_energia"
@@ -211,7 +211,7 @@ func trigger_emergency(emergency_type: StringName, severity: float) -> void:
 	var clamped_severity: float = clampf(severity, 0.0, 1.0)
 	match emergency_type:
 		EMERGENCY_METEOR:
-			_apply_damage(RESOURCE_STRUCTURE, clamped_severity * 10.0)
+			_apply_damage(RESOURCE_SHIELD, clamped_severity * 10.0)
 		EMERGENCY_OVERLOAD:
 			_apply_damage(RESOURCE_ENERGY, clamped_severity * 15.0)
 		EMERGENCY_PRESSURE:
@@ -284,7 +284,7 @@ func _reset_resources() -> void:
 		RESOURCE_OXYGEN: config.max_oxygen,
 		RESOURCE_ENERGY: config.max_energy,
 		RESOURCE_WATER: config.max_water,
-		RESOURCE_STRUCTURE: config.max_structure,
+		RESOURCE_SHIELD: config.max_shield,
 	}
 	_levels = _maxima.duplicate()
 	_critical_latched = {}
@@ -296,7 +296,7 @@ func _apply_decay(delta: float) -> void:
 	_decay_resource(RESOURCE_OXYGEN, config.oxygen_decay_rate, delta)
 	_decay_resource(RESOURCE_ENERGY, config.energy_decay_rate, delta)
 	_decay_resource(RESOURCE_WATER, config.water_decay_rate, delta)
-	_decay_resource(RESOURCE_STRUCTURE, config.structure_decay_rate, delta)
+	_decay_resource(RESOURCE_SHIELD, config.shield_decay_rate, delta)
 
 ## Aplica el decaimiento de un recurso concreto.
 func _decay_resource(resource_type: StringName, rate: float, delta: float) -> void:

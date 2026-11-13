@@ -14,13 +14,13 @@ extends Resource
 @export var max_oxygen: float = 100.0
 @export var max_energy: float = 100.0
 @export var max_water: float = 100.0
-@export var max_structure: float = 100.0
+@export var max_shield: float = 100.0
 
 @export_group("Tasas de decaimiento (unidades por segundo)")
 @export var oxygen_decay_rate: float = 0.5
 @export var energy_decay_rate: float = 0.3
 @export var water_decay_rate: float = 0.2
-@export var structure_decay_rate: float = 0.1
+@export var shield_decay_rate: float = 0.1
 
 @export_group("Emergencias")
 ## Segundos mínimos y máximos entre eventos de emergencia.

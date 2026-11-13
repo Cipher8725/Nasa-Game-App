@@ -66,7 +66,7 @@ con el mismo mobiliario que las fotos, repartido en las 25 baldosas:
 |--------|------------|------------------------|-----------|
 | `IMG_vestibulo.tscn` | `6bDelJ.jpg` | Vestíbulo / módulo de acceso | Pantalla grande en la pared oeste, puesto de control a escala, 9 baterías verdes apiladas, ventanal de cristal, barandilla y escalera de servicio (`Ramp_Grey`) al este |
 | `IMG_sala_de_mando.tscn` | `pGXT9C.jpg` | Sala de mando | `Orrery` central con el holograma, suelo `Floor_Metal_Circles`, 6 puestos de trabajo con lámpara, `Command_Wall`, ventanas de cristal |
-| `IMG_sala_del_generador.tscn` | `PjBOyt.jpg` | Sala del generador | Paredes `Wall_Red`, generador naranja, 8 baterías, franja de peligro, panel de estado, escalera de servicio |
+| `IMG_sala_del_generador.tscn` | `PjBOyt.jpg` | Sala del generador | Paredes `Wall_Red`, generador naranja, 8 baterías, franja de peligro, panel de estado, escalera de servicio y el **panel del escudo radioactivo dentro del generador** |
 | `IMG_enfermeria.tscn` | `9tMILo.jpg` | Enfermería | 7 camas `Bunk_Single_Green` + litera doble, paredes `Wall_Green`, biomonitores y alfombra verde |
 | `IMG_criotanque.tscn` | `bK2PlK.jpg` | Criotanque | 5 cápsulas `Cryo_Tube_ON` encendidas y 2 apagadas, paredes `Wall_Blue`, suelo médico, apliques y biomonitor rojo |
 | `IMG_cuartos.tscn` | `DnG84u.jpg` | Cuartos | Litera doble y 5 literas `Bunk_Single_Blue`, panel rojo de acento, tablero de ajedrez, sillas y apliques |
@@ -83,6 +83,15 @@ Notas:
   en las fotos.
 - Las piezas **cerradas** (los tramos de pasillo) van en el nodo `Shell`: su
   AABB engloba el módulo entero y daría solapes falsos.
+- Los **paneles invisibles** (p. ej. el del escudo dentro del generador) no se
+  comprueban: no se ven y su solape con la máquina es intencionado.
+
+## Sala de oxígeno (`room_oxigeno.tscn`)
+
+Sala nueva de **20 × 20 m** creada para el sistema de oxígeno: tanques de aire
+(`Generator_Pile_Small`), climatizadores, tubería de distribución, biomonitores y
+el **panel de control del oxígeno** contra la pared norte. Va al sur de la sala
+del generador, con su puerta alineada con la puerta oeste de esa sala.
 
 ## Colocarlos en el mapa
 
@@ -95,6 +104,17 @@ módulos contiguos es de **20,74 m** (o 21 m si se deja holgura). El pasillo
 position = (0, 0, n * 21)
 ```
 
+Dos módulos **no** pueden solaparse: como miden 20 m de lado, las salas
+contiguas se encadenan en línea (con un pasillo entre medias) o se separan
+en el eje Z. La estación actual usa esta cadena al norte:
+
+```
+cuartos → pasillo → sala de reuniones → pasillo → enfermería → pasillo → hidroponía
+```
+
+y al oeste, la sala del generador enlaza con la sala de oxígeno por una puerta
+compartida.
+
 ## Añadir una habitación nueva
 
 1. Copia un módulo existente como base.
@@ -102,17 +122,29 @@ position = (0, 0, n * 21)
 3. Coloca el mueble con la AABB real del modelo: **muchas piezas del pack tienen
    el origen descentrado** (por ejemplo `Command_Console` va de `z = -1.73` a
    `z = 3.15`, y `Bunk_Double_Grey` de `x = -1.25` a `x = 0.75`).
-4. Pásalo por el test de colocación (abajo) y revisa el resultado con una
-   captura.
+4. Si la sala tiene que conectar con otra, **añade una puerta**: sustituye el
+   panel de pared por `Wall_With_Door_Grey` y parte su caja de colisión en dos
+   tramos (hueco de 1,6 m).
+5. Pásalo por el test de colocación y el de accesibilidad (abajo).
 
 ## Verificación
 
 ```powershell
 $godot = "H:\Godot V4.7.2\Godot_v4.7.2-stable_win64_console.exe"
+
+# Colocación: ningún mueble se solapa con otro
 & $godot --headless --path . --quit-after 4000 "res://tests/room_collision_test.tscn"
+
+# Accesibilidad: ninguna puerta está tapada y todas dan a un espacio abierto
+& $godot --headless --path . --quit-after 4000 "res://tests/station_access_test.tscn"
 ```
 
-El test instancia los 17 módulos, comprueba que tienen la estructura mínima
-(suelo, paredes, props, luces y colisión) y que **ningún mueble se solapa con
-otro** (AABB, ignorando copias del mismo asset y las superficies de apoyo).
-Falla si algún solape supera 0,05 m³.
+`room_collision_test` instancia los 18 módulos, comprueba que tienen la
+estructura mínima (suelo, paredes, props, luces y colisión) y que **ningún mueble
+se solapa con otro** (AABB, ignorando copias del mismo asset, las superficies de
+apoyo y los paneles invisibles). Falla si algún solape supera 0,05 m³.
+
+`station_access_test` recorre toda la estación y, para cada puerta, comprueba
+que el paso inmediato está libre y que por detrás hay al menos 8 m de espacio
+abierto. Es el test que vigila que ninguna puerta vuelva a quedar cerrada por
+una colisión.

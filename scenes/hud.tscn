@@ -130,16 +130,16 @@ custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "100 / 100"
 
-[node name="StructureRow" type="HBoxContainer" parent="ResourcePanel/ResourceList"]
+[node name="ShieldRow" type="HBoxContainer" parent="ResourcePanel/ResourceList"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Name" type="Label" parent="ResourcePanel/ResourceList/StructureRow"]
+[node name="Name" type="Label" parent="ResourcePanel/ResourceList/ShieldRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(110, 0)
-text = "ESTRUCTURA"
+text = "ESCUDO RADIOACTIVO"
 
-[node name="StructureBar" type="ProgressBar" parent="ResourcePanel/ResourceList/StructureRow"]
+[node name="ShieldBar" type="ProgressBar" parent="ResourcePanel/ResourceList/ShieldRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 18)
 layout_mode = 2
@@ -150,7 +150,7 @@ show_percentage = false
 theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_bar_fill")
 
-[node name="StructureValue" type="Label" parent="ResourcePanel/ResourceList/StructureRow"]
+[node name="ShieldValue" type="Label" parent="ResourcePanel/ResourceList/ShieldRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2

@@ -15,7 +15,17 @@ extends Node
 const MIN_OVERLAP_VOLUME: float = 0.05
 
 ## Prefijos de ruta que no participan en la comprobación de solapes.
-const IGNORED_PATH_PARTS: PackedStringArray = ["StationPlatform", "SpaceBackdrop"]
+## La plataforma y el espacio exterior son decorado; las salas instanciadas
+## (habitaciones y pasillos) se validan aparte en room_collision_test.gd.
+const IGNORED_PATH_PARTS: PackedStringArray = [
+	"StationPlatform",
+	"SpaceBackdrop",
+	"Interior/Room",
+	"Interior/IMG_",
+	"Interior/Corridor",
+	"Interior/corridor_module",
+	"Interior/room_quarters",
+]
 
 var _meshes: Array[Dictionary] = []
 var _real_overlaps: Array[String] = []

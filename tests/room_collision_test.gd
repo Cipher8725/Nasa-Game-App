@@ -34,6 +34,7 @@ const ROOMS: PackedStringArray = [
 	"res://scenes/rooms/IMG_cuartos.tscn",
 	"res://scenes/rooms/IMG_sala_de_reuniones.tscn",
 	"res://scenes/rooms/IMG_sala_del_orrery.tscn",
+	"res://scenes/rooms/room_oxigeno.tscn",
 ]
 
 ## Subárboles que no participan en la comprobación de solapes.
@@ -115,7 +116,9 @@ func _collect(node: Node, root: Node, meshes: Array[Dictionary]) -> void:
 		if child is MeshInstance3D:
 			var mesh_instance: MeshInstance3D = child as MeshInstance3D
 			var mesh: Mesh = mesh_instance.mesh
-			if mesh != null and not _is_ignored_path(String(mesh_instance.get_path())):
+			# Las mallas ocultas (p. ej. el panel invisible dentro del generador)
+			# no se comprueban: no se ven y su solape es intencionado.
+			if mesh != null and mesh_instance.visible_in_tree and not _is_ignored_path(String(mesh_instance.get_path())):
 				meshes.append({
 					"name": String(mesh_instance.get_path()).replace(String(root.get_path()) + "/", ""),
 					"aabb": mesh_instance.global_transform * mesh.get_aabb(),

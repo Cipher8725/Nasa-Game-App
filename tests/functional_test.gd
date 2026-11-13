@@ -72,9 +72,9 @@ func _run_tests() -> void:
 	failures += _check("La misión vuelve de CRITICAL a ACTIVE", game.get_mission_state() == GameManager.MissionState.ACTIVE)
 
 	# Emergencia aplica daño estructural.
-	var structure_before: float = game.get_resource_level(GameManager.RESOURCE_STRUCTURE)
+	var shield_before: float = game.get_resource_level(GameManager.RESOURCE_SHIELD)
 	game.trigger_emergency(GameManager.EMERGENCY_METEOR, 1.0)
-	failures += _check("Emergencia meteorito daña estructura", game.get_resource_level(GameManager.RESOURCE_STRUCTURE) < structure_before)
+	failures += _check("Emergencia meteorito daña el escudo", game.get_resource_level(GameManager.RESOURCE_SHIELD) < shield_before)
 
 	# Guardado y carga.
 	# Se toma el valor de referencia en el momento de guardar: durante la misión

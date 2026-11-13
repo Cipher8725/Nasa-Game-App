@@ -262,7 +262,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0, 9.6)
 [node name="Wall_South_1" parent="Walls" instance=ExtResource("4_wall_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 0, -9.6)
 
-[node name="Wall_North_2" parent="Walls" instance=ExtResource("4_wall_grey")]
+[node name="Wall_North_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, 9.6)
 
 [node name="Wall_South_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
@@ -292,7 +292,7 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, -4.0)
 [node name="Wall_West_1" parent="Walls" instance=ExtResource("4_wall_grey")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, -4.0)
 
-[node name="Wall_East_2" parent="Walls" instance=ExtResource("4_wall_grey")]
+[node name="Wall_East_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 0.0)
 
 [node name="Wall_West_2" parent="Walls" instance=ExtResource("4_wall_grey")]
@@ -386,9 +386,14 @@ shape = SubResource("BoxShape3D_wall_x")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0, 2, -9.6)
 shape = SubResource("BoxShape3D_wall_x")
 
-[node name="Wall_North_2" type="CollisionShape3D" parent="Collision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 2, 9.6)
-shape = SubResource("BoxShape3D_wall_x")
+; La puerta se parte en dos tramos para dejar el hueco libre.
+[node name="Wall_North_2_a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 2, 9.6)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_North_2_b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 2, 9.6)
+shape = SubResource("BoxShape3D_door")
 
 [node name="Wall_South_2_a" type="CollisionShape3D" parent="Collision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 2, -9.6)
@@ -430,9 +435,14 @@ shape = SubResource("BoxShape3D_wall_z")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, -4.0)
 shape = SubResource("BoxShape3D_wall_z")
 
-[node name="Wall_East_2" type="CollisionShape3D" parent="Collision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 0.0)
-shape = SubResource("BoxShape3D_wall_z")
+; La puerta se parte en dos tramos para dejar el hueco libre.
+[node name="Wall_East_2_a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, -1.4)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_East_2_b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 1.4)
+shape = SubResource("BoxShape3D_door")
 
 [node name="Wall_West_2" type="CollisionShape3D" parent="Collision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 0.0)

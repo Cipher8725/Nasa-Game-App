@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=22 format=3]
 
 ; ─────────────────────────────────────────────────────────────
 ; IMG_SALA DEL GENERADOR  (20 x 20 m)
@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Orange.glb" id="14_battery_orange"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Red.glb" id="15_battery_red"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hazard_Floor_1.glb" id="16_hazard_floor_1"]
+[ext_resource type="PackedScene" path="res://scenes/console.tscn" id="17_console"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -300,7 +301,7 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, -4.0)
 [node name="Wall_East_2" parent="Walls" instance=ExtResource("4_wall_red")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 0.0)
 
-[node name="Wall_West_2" parent="Walls" instance=ExtResource("4_wall_red")]
+[node name="Wall_West_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 0.0)
 
 [node name="Wall_East_3" parent="Walls" instance=ExtResource("4_wall_red")]
@@ -320,6 +321,15 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 8.0)
 
 [node name="Generator" parent="Props" instance=ExtResource("6_generator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+; Panel del escudo radioactivo: va DENTRO del generador, por eso es
+; invisible (solo conserva la zona de interacción).
+[node name="ConsoleShield" parent="." instance=ExtResource("17_console")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+resource_type = &"shield"
+display_name = "ESCUDO RADIOACTIVO"
+console_color = Color(0.85, 0.85, 0.35, 1)
+panel_visible = false
 
 [node name="LargeMonitor" parent="Props" instance=ExtResource("7_large_monitor_blue")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -8.71, 0, -2)
@@ -433,9 +443,14 @@ shape = SubResource("BoxShape3D_wall_z")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 0.0)
 shape = SubResource("BoxShape3D_wall_z")
 
-[node name="Wall_West_2" type="CollisionShape3D" parent="Collision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 0.0)
-shape = SubResource("BoxShape3D_wall_z")
+; La puerta del oeste se parte en dos tramos para dejar el hueco libre.
+[node name="Wall_West_2_a" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, -1.4)
+shape = SubResource("BoxShape3D_door")
+
+[node name="Wall_West_2_b" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 1.4)
+shape = SubResource("BoxShape3D_door")
 
 [node name="Wall_East_3" type="CollisionShape3D" parent="Collision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 4.0)

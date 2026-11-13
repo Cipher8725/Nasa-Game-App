@@ -8,7 +8,7 @@ extends CanvasLayer
 ## el control del jugador y, al terminar, aplica la reparación en el
 ## `GameManager`.
 ##
-## Los recursos sin minijuego (agua, estructura) se reparan al instante como
+## Los recursos sin minijuego (agua y escudo) se reparan al instante como
 ## hasta ahora; se les puede añadir minijuego más adelante sin tocar este
 ## script: basta con registrar la escena en `_scene_for()`.
 

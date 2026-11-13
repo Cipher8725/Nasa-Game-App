@@ -31,11 +31,17 @@ func _run() -> void:
 	_check(not _ray_hits(space, Vector3(-5, 1, -3), Vector3(5, 1, -3)),
 		"El centro de la sala está libre de colisiones")
 
-	# 2) Las cuatro paredes bloquean.
+	# 2) Las cuatro paredes bloquean. Se comprueban en zonas macizas: las
+	# puertas (oeste, este y norte) dejan un hueco libre a propósito.
 	_check(_ray_hits(space, Vector3(0, 1, 0), Vector3(0, 1, -20)), "Pared trasera bloquea")
-	_check(_ray_hits(space, Vector3(0, 1, 0), Vector3(0, 1, 20)), "Pared del ventanal bloquea")
-	_check(_ray_hits(space, Vector3(0, 1, 0), Vector3(-20, 1, 0)), "Pared izquierda bloquea")
-	_check(_ray_hits(space, Vector3(0, 1, 0), Vector3(20, 1, 0)), "Pared derecha bloquea")
+	_check(_ray_hits(space, Vector3(4, 1, 0), Vector3(4, 1, 20)), "Pared del ventanal bloquea")
+	_check(_ray_hits(space, Vector3(0, 1, 4), Vector3(-20, 1, 4)), "Pared izquierda bloquea")
+	_check(_ray_hits(space, Vector3(0, 1, 4), Vector3(20, 1, 4)), "Pared derecha bloquea")
+
+	# 2 bis) Las puertas SÍ dejan pasar: ese es el punto de la ampliación.
+	_check(not _ray_hits(space, Vector3(0, 1, 0), Vector3(0, 1, 14)), "La puerta norte deja pasar")
+	_check(not _ray_hits(space, Vector3(0, 1, 0), Vector3(-14, 1, 0)), "La puerta oeste deja pasar")
+	_check(not _ray_hits(space, Vector3(0, 1, 0), Vector3(14, 1, 0)), "La puerta este deja pasar")
 
 	# 3) El suelo sostiene.
 	_check(_ray_hits(space, Vector3(0, 2, 0), Vector3(0, -5, 0)), "El suelo bloquea la caída")

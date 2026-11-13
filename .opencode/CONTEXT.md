@@ -248,6 +248,41 @@ sistemas.
     cubren un módulo de 20 × 20 m).
 - `rooms_preview.tscn` actualizado a 22 m de separación entre módulos.
 
+### Hito 10 — Accesibilidad, primera persona y salas nuevas (2026-11-12)
+
+- **Accesibilidad (el bug del "muro invisible")**: las colisiones del hábitat
+  eran **cajas de 20 m** que cerraban las puertas. Ahora `scenes/habitat.tscn`
+  tiene **una caja por panel de pared** y las puertas se parten en **dos
+  tramos** (hueco de 1,6 m).
+  - Doors del hábitat: oeste (z = 0), este (z = 0) y norte (x = 0).
+  - Puertas nuevas en las salas: cuartos (norte y este), sala de reuniones
+    (norte), enfermería (este) y sala del generador (oeste).
+- **Nuevo test `tests/station_access_test.gd`**: recorre toda la estación y
+  comprueba que el paso de cada puerta está libre y que por detrás hay 8 m de
+  espacio abierto. Es la red de seguridad del bug de las puertas.
+- **Cámara en primera persona**: `scenes/player.tscn` ya no tiene
+  `CameraPivot` ni `SpringArm3D`; la `Camera3D` cuelga de la cabeza (y = 1,6) y
+  las mallas del cuerpo y la cabeza se ocultan. El mouse gira el cuerpo (yaw) y
+  la cámara (pitch).
+- **Salas nuevas** (20 × 20 m) encadenadas al norte de la estación:
+  `cuartos → pasillo → sala de reuniones → pasillo → enfermería → pasillo →
+  hidroponía` (a 102 m del centro). Al oeste, la **sala del generador** enlaza
+  con la **nueva sala de oxígeno** (`scenes/rooms/room_oxigeno.tscn`), que
+  contiene el panel de control de oxígeno.
+  - Criterio: dos salas de 20 m **no pueden solaparse**, así que se encadenan
+    en línea con pasillos intermedios.
+- **Paneles de consola reubicados**:
+  - Oxígeno → en la sala de oxígeno (`room_oxigeno.tscn`).
+  - Escudo radioactivo → **dentro del generador**, invisible pero
+    interactuable (`ResourceConsole.panel_visible = false` oculta el modelo, la
+    etiqueta y el cuerpo sólido).
+- **Sistema "Estructura" → "Escudo radioactivo"**: `RESOURCE_STRUCTURE` pasa a
+  `RESOURCE_SHIELD` (&"shield"), con `max_shield` y `shield_decay_rate` en
+  `MissionConfig`, y la etiqueta del HUD y de la consola.
+- La suite queda en **8 pruebas**: `functional`, `interaction`, `simulation`,
+  `asset_collision`, `physics`, `minigame`, `room_collision` y
+  `station_access` (todas en verde).
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -472,4 +507,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 9 (módulos ampliados a 20 x 20 m, igual que el habitat) completado.*
+*Actualizado: 2026-11-12 — Hito 10 (accesibilidad, cámara en primera persona, salas nuevas y escudo radioactivo) completado.*

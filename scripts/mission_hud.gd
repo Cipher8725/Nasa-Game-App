@@ -10,12 +10,12 @@ extends Control
 @onready var _oxygen_bar: ProgressBar = %OxygenBar
 @onready var _energy_bar: ProgressBar = %EnergyBar
 @onready var _water_bar: ProgressBar = %WaterBar
-@onready var _structure_bar: ProgressBar = %StructureBar
+@onready var _shield_bar: ProgressBar = %ShieldBar
 
 @onready var _oxygen_value: Label = %OxygenValue
 @onready var _energy_value: Label = %EnergyValue
 @onready var _water_value: Label = %WaterValue
-@onready var _structure_value: Label = %StructureValue
+@onready var _shield_value: Label = %ShieldValue
 
 @onready var _timer_label: Label = %TimerLabel
 @onready var _score_label: Label = %ScoreLabel
@@ -31,7 +31,7 @@ const RESOURCE_LABELS: Dictionary = {
 	&"oxygen": "OXÍGENO",
 	&"energy": "ENERGÍA",
 	&"water": "AGUA",
-	&"structure": "ESTRUCTURA",
+	&"shield": "ESCUDO RADIOACTIVO",
 }
 
 var _alert_time_left: float = 0.0
@@ -107,8 +107,8 @@ func _on_resource_changed(resource_type: StringName, current_value: float, max_v
 			_update_resource_bar(_energy_bar, _energy_value, current_value, max_value)
 		GameManager.RESOURCE_WATER:
 			_update_resource_bar(_water_bar, _water_value, current_value, max_value)
-		GameManager.RESOURCE_STRUCTURE:
-			_update_resource_bar(_structure_bar, _structure_value, current_value, max_value)
+		GameManager.RESOURCE_SHIELD:
+			_update_resource_bar(_shield_bar, _shield_value, current_value, max_value)
 
 func _on_resource_critical(resource_type: StringName) -> void:
 	var label: String = String(RESOURCE_LABELS.get(resource_type, resource_type))

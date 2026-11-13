@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=14 format=3]
 
 ; Módulo habitable de la estación espacial.
 ;
@@ -6,9 +6,10 @@
 ; suelo/mapa provisional. La geometría del módulo viene de
 ; `scenes/habitat_decor.tscn` y las consolas de `scenes/console.tscn`.
 ;
-; FÍSICA: este script define las cajas de colisión invisibles. Las paredes del
-; pack son solo visuales; las colisiones se mantienen aquí, separadas, para
-; poder ajustar la jugabilidad sin tocar los modelos.
+; FÍSICA: las paredes del pack son solo visuales; aquí están las cajas de
+; colisión invisibles. Cada pared se modela con una caja por panel y las
+; puertas se parten en dos tramos, de forma que los huecos quedan transitables
+; (si no, una puerta invisible cerraba el paso a las salas).
 
 [ext_resource type="Script" path="res://scripts/habitat.gd" id="1_habitat"]
 [ext_resource type="PackedScene" path="res://scenes/console.tscn" id="2_console"]
@@ -38,8 +39,20 @@ tonemap_mode = 3
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
-size = Vector3(20, 4, 0.74)
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_x"]
+size = Vector3(4, 4, 0.74)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_z"]
+size = Vector3(0.74, 4, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_glass"]
+size = Vector3(4, 4, 0.32)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door"]
+size = Vector3(1.2, 4, 0.65)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_door_side"]
+size = Vector3(0.65, 4, 1.2)
 
 [node name="Habitat" type="Node3D"]
 script = ExtResource("1_habitat")
@@ -89,8 +102,11 @@ light_energy = 1.6
 omni_range = 10.0
 
 ; ─────────────────────────────────────────────────────────────
-; Colisiones. Las paredes visuales están a ±9.6 con 0.74 m de grosor, así que
-; las cajas coinciden exactamente con su cara interior.
+; Colisiones. Una caja por panel de pared. Las puertas se parten en
+; dos tramos para dejar un hueco de 1,6 m (o 1,6 m en el eje Z).
+;
+; Puerta NORTE (x = 0) · puertas SUR (x = -8, 0, +8) · puerta OESTE y
+; puerta ESTE (z = 0).
 ; ─────────────────────────────────────────────────────────────
 [node name="Floor" type="StaticBody3D" parent="."]
 collision_layer = 1
@@ -100,39 +116,117 @@ collision_mask = 1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 shape = SubResource("BoxShape3D_floor")
 
+; Pared sur (z = -9,6): 5 paños macizos.
 [node name="WallBack" type="StaticBody3D" parent="."]
 collision_layer = 1
 collision_mask = 1
 
-[node name="WallCollision" type="CollisionShape3D" parent="WallBack"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -9.6)
-shape = SubResource("BoxShape3D_wall")
+[node name="South_Wall_0" type="CollisionShape3D" parent="WallBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -9.6)
+shape = SubResource("BoxShape3D_wall_x")
 
+[node name="South_Wall_1" type="CollisionShape3D" parent="WallBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, -9.6)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="South_Wall_2" type="CollisionShape3D" parent="WallBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -9.6)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="South_Wall_3" type="CollisionShape3D" parent="WallBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, -9.6)
+shape = SubResource("BoxShape3D_wall_x")
+
+[node name="South_Wall_4" type="CollisionShape3D" parent="WallBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -9.6)
+shape = SubResource("BoxShape3D_wall_x")
+
+; Pared norte (z = 9,6): puerta en x = 0, cristal en x = ±4.
 [node name="WallFront" type="StaticBody3D" parent="."]
 collision_layer = 1
 collision_mask = 1
 
-[node name="WallCollision" type="CollisionShape3D" parent="WallFront"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 9.6)
-shape = SubResource("BoxShape3D_wall")
+[node name="North_Wall_0" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 9.6)
+shape = SubResource("BoxShape3D_wall_x")
 
-; Las paredes laterales se rotan 90° sobre Y: su longitud (20 m) pasa a ir
-; sobre el eje Z y su grosor (0.74 m) sobre el eje X.
+[node name="North_Glass_1" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 9.6)
+shape = SubResource("BoxShape3D_wall_glass")
+
+[node name="North_Door_a" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 2, 9.66)
+shape = SubResource("BoxShape3D_door")
+
+[node name="North_Door_b" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 2, 9.66)
+shape = SubResource("BoxShape3D_door")
+
+[node name="North_Glass_3" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, 9.6)
+shape = SubResource("BoxShape3D_wall_glass")
+
+[node name="North_Wall_4" type="CollisionShape3D" parent="WallFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 9.6)
+shape = SubResource("BoxShape3D_wall_x")
+
+; Pared oeste (x = -9,6): puerta en z = 0.
 [node name="WallLeft" type="StaticBody3D" parent="."]
 collision_layer = 1
 collision_mask = 1
 
-[node name="WallCollision" type="CollisionShape3D" parent="WallLeft"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 2, 0)
-shape = SubResource("BoxShape3D_wall")
+[node name="West_Wall_0" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, -8)
+shape = SubResource("BoxShape3D_wall_z")
 
+[node name="West_Wall_1" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, -4)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="West_Door_a" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, -1.4)
+shape = SubResource("BoxShape3D_door_side")
+
+[node name="West_Door_b" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 1.4)
+shape = SubResource("BoxShape3D_door_side")
+
+[node name="West_Wall_3" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 4)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="West_Wall_4" type="CollisionShape3D" parent="WallLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 8)
+shape = SubResource("BoxShape3D_wall_z")
+
+; Pared este (x = 9,6): puerta en z = 0.
 [node name="WallRight" type="StaticBody3D" parent="."]
 collision_layer = 1
 collision_mask = 1
 
-[node name="WallCollision" type="CollisionShape3D" parent="WallRight"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 2, 0)
-shape = SubResource("BoxShape3D_wall")
+[node name="East_Wall_0" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, -8)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="East_Wall_1" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, -4)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="East_Door_a" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, -1.4)
+shape = SubResource("BoxShape3D_door_side")
+
+[node name="East_Door_b" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 1.4)
+shape = SubResource("BoxShape3D_door_side")
+
+[node name="East_Wall_3" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 4)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="East_Wall_4" type="CollisionShape3D" parent="WallRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 8)
+shape = SubResource("BoxShape3D_wall_z")
 
 ; ─────────────────────────────────────────────────────────────
 ; Contenido.
@@ -141,31 +235,23 @@ shape = SubResource("BoxShape3D_wall")
 
 [node name="Interior" parent="." instance=ExtResource("3_decor")]
 
-; Consolas de control: separadas 4 m (el modelo mide 3.47 m de ancho a la
-; escala 0.55 que aplica `scenes/console.tscn`).
-[node name="ConsoleOxygen" parent="." instance=ExtResource("2_console")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -7.85)
-resource_type = &"oxygen"
-display_name = "OXÍGENO"
-console_color = Color(0.2, 0.6, 0.9, 1)
-
+; Consolas de control del módulo central: se colocan en los paños sólidos
+; de la pared sur (x = ±4), entre las tres puertas nuevas.
 [node name="ConsoleEnergy" parent="." instance=ExtResource("2_console")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -7.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -7.85)
 resource_type = &"energy"
 display_name = "ENERGÍA"
 console_color = Color(0.95, 0.75, 0.2, 1)
 
 [node name="ConsoleWater" parent="." instance=ExtResource("2_console")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -7.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -7.85)
 resource_type = &"water"
 display_name = "AGUA"
 console_color = Color(0.2, 0.85, 0.75, 1)
 
-[node name="ConsoleStructure" parent="." instance=ExtResource("2_console")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -7.85)
-resource_type = &"structure"
-display_name = "ESTRUCTURA"
-console_color = Color(0.85, 0.35, 0.35, 1)
+; NOTA: la consola de OXÍGENO vive en scenes/rooms/room_oxigeno.tscn y la del
+; ESCUDO RADIOACTIVO va dentro del generador
+; (scenes/rooms/IMG_sala_del_generador.tscn), invisible pero interactuable.
 
 [node name="PlayerStart" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)

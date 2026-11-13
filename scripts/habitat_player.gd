@@ -3,9 +3,11 @@ extends CharacterBody3D
 
 ## Jugador controlable dentro del hábitat.
 ##
-## Usa `CharacterBody3D` con `move_and_slide()` y una cámara de tercera persona
-## montada sobre un `SpringArm3D`. La cámara y el área de interacción son nodos
-## estructurales definidos en `scenes/player.tscn` (prohibido crearlos en código).
+## Usa `CharacterBody3D` con `move_and_slide()` y una **cámara en primera
+## persona** montada en la cabeza (nodo `Camera3D` de `scenes/player.tscn`).
+## El mouse gira la vista: la guiñada (yaw) rota el cuerpo del jugador y el
+## cabeceo (pitch) la cámara. La zona de interacción es un nodo estructural
+## definido en la escena (prohibido crearlos en código).
 
 @export_group("Movimiento")
 ## Velocidad máxima de desplazamiento horizontal (m/s).
@@ -29,7 +31,7 @@ extends CharacterBody3D
 ## Radio de detección de consolas (metros).
 @export var interaction_radius: float = 2.5
 
-@onready var _camera_pivot: Node3D = %CameraPivot
+@onready var _camera: Camera3D = %Camera3D
 @onready var _interaction_area: Area3D = %InteractionArea
 @onready var _interaction_shape: CollisionShape3D = %InteractionShape
 
@@ -72,9 +74,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		var motion: InputEventMouseMotion = event as InputEventMouseMotion
+		# Guiñada: gira el cuerpo del jugador (y con él la cámara).
 		rotate_y(-motion.relative.x * mouse_sensitivity)
+		# Cabeceo: gira solo la cámara.
 		_pitch = clampf(_pitch - motion.relative.y * mouse_sensitivity, min_pitch, max_pitch)
-		_camera_pivot.rotation.x = _pitch
+		_camera.rotation.x = _pitch
 
 func _physics_process(delta: float) -> void:
 	# Gravedad: se aplica siempre hacia abajo y se compensa con `is_on_floor()`.

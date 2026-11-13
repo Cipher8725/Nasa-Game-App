@@ -41,11 +41,13 @@ script = ExtResource("1_player")
 
 [node name="BodyMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+visible = false
 mesh = SubResource("CapsuleMesh_body")
 surface_material_override/0 = SubResource("StandardMaterial3D_body")
 
 [node name="HeadMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
+visible = false
 mesh = SubResource("SphereMesh_head")
 surface_material_override/0 = SubResource("StandardMaterial3D_head")
 
@@ -57,18 +59,14 @@ shape = SubResource("CapsuleShape3D_body")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
 shape = SubResource("CapsuleShape3D_head")
 
-[node name="CameraPivot" type="Node3D" parent="."]
+; Cámara en primera persona: cuelga de la cabeza del jugador (y = 1,6).
+; El guiñada (yaw) gira el cuerpo del jugador y el cabeceo (pitch) la cámara.
+[node name="Camera3D" type="Camera3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
-
-[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
-collision_mask = 1
-spring_length = 4.0
-margin = 0.3
-
-[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
 current = true
-fov = 75.0
+fov = 78.0
+near = 0.05
 
 [node name="InteractionArea" type="Area3D" parent="."]
 unique_name_in_owner = true

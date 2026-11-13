@@ -30,13 +30,9 @@ func _run() -> void:
 		return
 
 	# --- Detección de consola cercana ---
-	# Se coloca al jugador frente a la consola de oxígeno.
-	var oxygen_console: ResourceConsole = null
-	for node: Node in main_scene.get_node("Habitat").get_children():
-		var console: ResourceConsole = node as ResourceConsole
-		if console != null and console.resource_type == GameManager.RESOURCE_OXYGEN:
-			oxygen_console = console
-			break
+	# Se busca en todo el árbol: las consolas pueden vivir dentro de una sala
+	# (por ejemplo, la de oxígeno dentro de la sala de aire).
+	var oxygen_console: ResourceConsole = _find_console(main_scene.get_node("Habitat"), GameManager.RESOURCE_OXYGEN)
 	failures += _check("Consola de oxígeno encontrada", oxygen_console != null)
 	if oxygen_console == null:
 		get_tree().quit(1)
@@ -133,3 +129,14 @@ func _check(label: String, condition: bool) -> int:
 		return 0
 	print("  [FALLO] ", label)
 	return 1
+
+## Busca recursivamente una consola por su recurso.
+func _find_console(node: Node, resource_type: StringName) -> ResourceConsole:
+	for child: Node in node.get_children():
+		var console: ResourceConsole = child as ResourceConsole
+		if console != null and console.resource_type == resource_type:
+			return console
+		var found: ResourceConsole = _find_console(child, resource_type)
+		if found != null:
+			return found
+	return null
