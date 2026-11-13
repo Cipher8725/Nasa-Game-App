@@ -1,0 +1,29 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3]
+
+; Regolita marciana para el suelo interior del hábitat.
+;
+; El suelo del pack Molten Maps son baldosas sueltas con su propio material. En
+; lugar de cambiar el material de cada baldosa en cada sala, se aplica este
+; material con `scripts/regolith_floor.gd` (nodo `StationInterior` de
+; `scenes/habitat_decor.tscn`), que lo asigna como `material_override`.
+;
+; La proyección es triplanar en espacio de mundo (`uv1_world_triplanar`): así la
+; textura es continua entre baldosas, salas y pasillos, y no se repite una vez
+; por baldosa. `uv1_scale = 0.2` equivale a una baldosa de textura cada 5 m,
+; la misma densidad que la regolita lunar del exterior.
+
+[ext_resource type="Texture2D" path="res://ai_assets/textures/mars_regolith.webp" id="1_albedo"]
+[ext_resource type="Texture2D" path="res://ai_assets/textures/mars_regolith_normal.webp" id="2_normal"]
+
+[resource]
+resource_name = "MarsRegolith"
+albedo_texture = ExtResource("1_albedo")
+metallic = 0.0
+roughness = 0.96
+normal_enabled = true
+normal_texture = ExtResource("2_normal")
+normal_scale = 0.85
+uv1_triplanar = true
+uv1_world_triplanar = true
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+texture_filter = 5

@@ -1,0 +1,19 @@
+[gd_resource type="PanoramaSkyMaterial" load_steps=2 format=3]
+
+; Cielo de la estación: panorámica equirectangular 2:1 (2048x1024).
+;
+; La imagen se generó con IA (API de Layer) y se procesó con
+; `tools/process_ai_textures.py`: reflejo horizontal para que los dos bordes del
+; panorama coincidan y un fundido en los polos para que las estrellas no se
+; estiren en el cenit. Es un cielo realista y sobrio (Vía Láctea tenue), sin
+; planetas ni destellos, para que la vista desde el ventanal no distraiga.
+;
+; `filter = true` suaviza el muestreo: al mirar hacia arriba las estrellas no
+; parpadean ni se ven como píxeles duros.
+
+[ext_resource type="Texture2D" path="res://ai_assets/textures/sky_space.webp" id="1_sky"]
+
+[resource]
+resource_name = "SkySpacePanorama"
+panorama = ExtResource("1_sky")
+filter = true

@@ -283,6 +283,55 @@ sistemas.
   `asset_collision`, `physics`, `minigame`, `room_collision` y
   `station_access` (todas en verde).
 
+### Hito 11 — Cielo espacial, regolita lunar/marciana y HUD infantil (2026-11-13)
+
+- **Cielo realista y sobrio** (`resources/sky_space_material.tres`):
+  `PanoramaSkyMaterial` con panorámica equirectangular 2:1 de 2048×1024. Sustituye
+  al `ProceduralSkyMaterial` anterior. La imagen se generó con IA (API de Layer,
+  `flux-3-image`) y se procesó con `tools/process_ai_textures.py`.
+  - Sin costura horizontal: mitad izquierda = imagen, mitad derecha = su reflejo.
+  - Variación de brillo periódica (una sola onda por vuelta) para disimular la
+    simetría del reflejo y desvanecido en los polos (las estrellas no se estiran
+    en el cenit/nadir).
+- **Regolita lunar** en el cubo base (`resources/station_platform_material.tres`):
+  albedo + normal, `uv1_scale = 12` (una baldosa cada 5 m en un cubo de 60 m).
+- **Regolita marciana** en todos los suelos interiores
+  (`resources/mars_ground_material.tres` + `scripts/regolith_floor.gd`):
+  - El pack modela el suelo como baldosas sueltas; en vez de tocar 257 nodos, el
+    script del nodo `StationInterior` recorre los contenedores `Floor` /
+    `FloorTiles` (incluidas las salas instanciadas) y asigna `material_override`.
+  - Material **triplanar en espacio de mundo** (`uv1_triplanar`), así la textura
+    es continua entre baldosas, salas y pasillos.
+  - Un `@export var enabled` lo revierte al suelo original del pack.
+- **Cristal de las ventanas** (`resources/window_glass_material.tres` +
+  `scripts/window_glass.gd` en el nodo `Walls`): el `Wall_Glass_Clear.glb` del
+  pack trae el cristal tintado (alfa 0.45) y en Compatibility no hay transmisión,
+  así que se veía como un panel azul opaco. El script sustituye **solo** la
+  superficie cuyo material se llama "... Glass" (el marco se respeta) por un
+  material `transparency = ALPHA` + `shading_mode = UNSHADED` con alfa 0.10: deja
+  ver el espacio y no se "enciende" con las lámparas del techo.
+- **HUD "para niños" (7-12 años)**: `scenes/hud.tscn` reconstruido con tarjetas
+  redondeadas, un color por recurso (oxígeno azul, energía amarilla, agua verde
+  azulada, escudo violeta), etiquetas de 19 px, cuenta atrás de 46 px, avisos en
+  "píldora" y panel de resultado con "Pulsa R para volver a jugar".
+  `scripts/mission_hud.gd` muestra **tiempo restante** (no transcurrido) y lo
+  colorea en ámbar a 30 s y rojo a 10 s; la etiqueta de estado cambia de color
+  según `MissionState`. Los 15 nombres únicos (`%`) se mantienen.
+- **Ajuste de luz**: el ambiente pasó de `ambient_light_source = SKY` (negro) a
+  color `(0.42, 0.52, 0.78)` con energía `0.5`, `tonemap_exposure = 0.95`, sol
+  `1.05`, relleno `0.3` y lámparas interiores `1.15`: las paredes ya no salen
+  lavadas ni negras.
+- **Bug corregido en `scenes/station_platform.tscn`**: los 4 paneles solares
+  declaraban `parent="SolarArray"` (ruta relativa a la raíz) en vez de
+  `parent="Exterior/SolarArray"`; Godot los descartaba con
+  `WARNING: Parent path './SolarArray' ... has vanished`. Ya aparecen.
+- **Texturas fuera de 4K/Full HD**: cielo 2048×1024 y suelos 1024² (normales
+  512²), en **WebP** (q95 cielo, q90/q92 suelos; 1,69 MB en total). El JPEG
+  producía bloques de 8×8 px visibles al ampliar el cielo en pantalla.
+  - Los `.import` llevan `compress/mode = 0`, `detect_3d/compress_to = 0` y
+    `mipmaps/generate = true`: Godot no las recomprime a VRAM al usarlas en 3D.
+- Suite de 8 pruebas + `--headless --import` en verde tras los cambios.
+
 ## 3. ¿Cómo se hizo?
 
 ### Arquitectura
@@ -368,13 +417,29 @@ con números por frame), pero la señal `resource_changed` se emite a **10 Hz**
 `Time.get_unix_time_from_system()` (verificado: `OS.get_unix_time()` ya no
 existe en 4.7.2).
 
+### Materiales aplicados por script (regolita y cristal)
+
+Cambiar a mano cientos de `material_override` en el `.tscn` es frágil, así que
+dos scripts de un solo propósito hacen el trabajo al arrancar:
+
+| Script | Nodo | Qué hace |
+|--------|------|----------|
+| `scripts/regolith_floor.gd` (`RegolithFloor`) | `StationInterior` de `habitat_decor.tscn` | Recorre `Floor`/`FloorTiles` y pone la regolita marciana (triplanar de mundo) |
+| `scripts/window_glass.gd` (`WindowGlass`) | `Walls` de `habitat_decor.tscn` | Sustituye solo las superficies de material "... Glass" por cristal transparente |
+
+Ambos siguen el mismo patrón: `@export var enabled` para volver al estado
+original del pack, `@export var <material>` para cambiar el material sin tocar
+código, un contador `get_applied_*_count()` para las pruebas y un `print` único en
+`_ready()` para verificar en el log.
+
 ### 4. ¿Qué hay que hacer?
 
 ### Pendiente inmediato (siguiente hito)
 
-1. **Textura del cubo de la estación**: sustituir el material gris
-   (`resources/station_platform_material.tres`) por un mapa con textura. Basta
-   con asignar `albedo_texture` o crear un material nuevo para `BaseCube`.
+1. ~~**Textura del cubo de la estación**~~ → **hecho en el Hito 11**: regolita
+   lunar en `resources/station_platform_material.tres`. Queda opcional subir la
+   resolución del suelo (1024² es deliberado: nada de 4K) o añadir una capa de
+   detalle a distancia media.
 2. **Audio**: alarmas de recurso crítico, impacto de emergencia y confirmación
    de reparación. Usar `AudioStreamPlayer` definido en las escenas.
 3. **Assets finales del jugador**: el astronauta sigue siendo una cápsula
@@ -466,6 +531,23 @@ $root  = "H:\GodotProyects\GodotProyects 4.7.2\na-sa-game"
 > `--quit-after N` cuenta **iteraciones del bucle**, no segundos. En headless las
 > iteraciones pasan muy rápido, así que hace falta un valor alto (20000) para
 > que los temporizadores reales (cuenta atrás de 3 s) lleguen a dispararse.
+
+### Pipeline de texturas IA (`tools/process_ai_textures.py`)
+
+1. Generar las imágenes crudas con la API de Layer (`LAYER_API_KEY`) en una
+   carpeta temporal; **nunca** dentro del proyecto sin procesar.
+2. `python tools/process_ai_textures.py --raw <carpeta> --out ai_assets/textures`
+   - recorta 8 px del borde (artefactos del generador),
+   - hace los suelos repetibles con **fundido cruzado circular**
+     (`O = A·I + (1−A)·desplazada(I)`, banda del 20 %); el mosaico especular
+     también cierra sin costura pero deja cráteres en rombo,
+   - deriva las normales con Sobel circular (convención OpenGL, +Y arriba),
+   - guarda en **WebP** (cielo q95, albedo q90, normales q92).
+3. Tras el primer `--headless --import`, comprobar que cada `.webp.import` tenga
+   `compress/mode = 0`, `detect_3d/compress_to = 0` y `mipmaps/generate = true`.
+   Si `detect_3d` vale 1, Godot recomprime la textura a VRAM al usarla en 3D y
+   aparecen bloques.
+4. Los recursos (`resources/*.tres`) referencian `res://ai_assets/textures/...`.
 
 ### Patrón para añadir un recurso nuevo
 

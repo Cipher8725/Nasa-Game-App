@@ -72,3 +72,6 @@ credentials.json
 /assets/KayKit_Space_Base_Bits_1.0_FREE/
 /assets/Molten Maps SciFi Asset Pack/
 /assets/Planets_Asteroids_FREE_SAMPLE/
+
+# Caché de Python (tools/process_ai_textures.py)
+__pycache__/

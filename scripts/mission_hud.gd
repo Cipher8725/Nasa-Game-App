@@ -34,6 +34,21 @@ const RESOURCE_LABELS: Dictionary = {
 	&"shield": "ESCUDO RADIOACTIVO",
 }
 
+## Colores de la cuenta atrás: normal, aviso (quedan 30 s) y peligro (10 s).
+const COLOR_TIMER_NORMAL: Color = Color(0.96, 0.98, 1, 1)
+const COLOR_TIMER_WARNING: Color = Color(1, 0.82, 0.35, 1)
+const COLOR_TIMER_DANGER: Color = Color(1, 0.45, 0.4, 1)
+
+## Color de la etiqueta de estado según la marcha de la misión. Los niños
+## reconocen el estado por el color antes de leerlo.
+const STATE_COLORS: Dictionary = {
+	GameManager.MissionState.BRIEFING: Color(0.62, 0.76, 0.95),
+	GameManager.MissionState.ACTIVE: Color(0.5, 0.93, 0.64),
+	GameManager.MissionState.CRITICAL: Color(1, 0.66, 0.32),
+	GameManager.MissionState.FAILED: Color(1, 0.45, 0.4),
+	GameManager.MissionState.COMPLETED: Color(0.5, 0.93, 0.64),
+}
+
 var _alert_time_left: float = 0.0
 
 func _ready() -> void:
@@ -70,15 +85,24 @@ func _update_resource_bar(bar: ProgressBar, value_label: Label, current: float, 
 	bar.value = current
 	value_label.text = "%d / %d" % [roundi(current), roundi(maximum)]
 
-## Refresca el contador de tiempo de misión.
+## Refresca la cuenta atrás de la misión (tiempo restante).
 func _update_timer_display() -> void:
-	_timer_label.text = "TIEMPO: %s" % _format_time(_game.get_mission_time())
+	var remaining: float = maxf(0.0, _game.config.mission_duration - _game.get_mission_time())
+	_timer_label.text = _format_time(remaining)
+
+	# El color avisa antes que el número: amarillo a 30 s, rojo a 10 s.
+	var color: Color = COLOR_TIMER_NORMAL
+	if remaining <= 10.0:
+		color = COLOR_TIMER_DANGER
+	elif remaining <= 30.0:
+		color = COLOR_TIMER_WARNING
+	_timer_label.add_theme_color_override("font_color", color)
 
 ## Refresca la puntuación de la misión.
 func _update_score_display() -> void:
 	_score_label.text = "PUNTOS: %d" % roundi(_game.get_score())
 
-## Traduce el estado de misión a un texto comprensible.
+## Traduce el estado de misión a un texto comprensible y le da color.
 func _update_state_display(state: GameManager.MissionState) -> void:
 	match state:
 		GameManager.MissionState.BRIEFING:
@@ -91,6 +115,8 @@ func _update_state_display(state: GameManager.MissionState) -> void:
 			_state_label.text = "ESTADO: FALLIDO"
 		GameManager.MissionState.COMPLETED:
 			_state_label.text = "ESTADO: COMPLETADO"
+	var color: Color = STATE_COLORS.get(state, COLOR_TIMER_NORMAL)
+	_state_label.add_theme_color_override("font_color", color)
 
 ## Convierte segundos a formato mm:ss.
 func _format_time(seconds: float) -> String:

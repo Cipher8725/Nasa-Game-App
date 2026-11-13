@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+; Cristal de las ventanas del hábitat.
+;
+; El pack Molten Maps trae sus ventanas con un cristal "tintado": textura azul y
+; alfa 0.45. En el renderizador Compatibility (GL) no existe la transmisión, así
+; que el resultado era un panel azul opaco y desde dentro no se veía el espacio.
+;
+; Este material sustituye SOLO la superficie de cristal (el marco se queda como
+; está; ver `scripts/window_glass.gd`):
+;   * `transparency = 1` (alfa): deja pasar el fondo.
+;   * `shading_mode = 0` (sin sombreado): el cristal no recibe luz ni brillos,
+;     así que no se "enciende" con las lámparas del techo y se ve el cielo tal
+;     cual. Con un cristal sombreado el panel se volvía azul opaco.
+;   * alfa 0.10: un tinte tenue que deja notar que hay cristal sin oscurecer.
+
+[resource]
+resource_name = "ClearGlass"
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.55, 0.7, 0.92, 0.1)

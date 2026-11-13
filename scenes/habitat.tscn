@@ -2,9 +2,10 @@
 
 ; Módulo habitable de la estación espacial.
 ;
-; La estación se apoya sobre un gran cubo gris (StationPlatform) que actúa de
-; suelo/mapa provisional. La geometría del módulo viene de
+; La estación se apoya sobre un gran cubo (StationPlatform) texturizado con
+; regolita lunar. La geometría del módulo viene de
 ; `scenes/habitat_decor.tscn` y las consolas de `scenes/console.tscn`.
+; El cielo es una panorámica realista (`resources/sky_space_material.tres`).
 ;
 ; FÍSICA: las paredes del pack son solo visuales; aquí están las cajas de
 ; colisión invisibles. Cada pared se modela con una caja por panel y las
@@ -17,24 +18,19 @@
 [ext_resource type="PackedScene" path="res://scenes/station_platform.tscn" id="4_platform"]
 [ext_resource type="PackedScene" path="res://assets/Planets_Asteroids_FREE_SAMPLE/planets/Verdant_World.glb" id="5_planet"]
 [ext_resource type="PackedScene" path="res://assets/Planets_Asteroids_FREE_SAMPLE/asteroids/Cratered_Potato.glb" id="6_asteroid"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_space"]
-sky_top_color = Color(0.02, 0.02, 0.05, 1)
-sky_horizon_color = Color(0.08, 0.09, 0.16, 1)
-ground_bottom_color = Color(0.01, 0.01, 0.02, 1)
-ground_horizon_color = Color(0.05, 0.06, 0.1, 1)
-sun_angle_max = 30.0
+[ext_resource type="Material" path="res://resources/sky_space_material.tres" id="7_sky"]
 
 [sub_resource type="Sky" id="Sky_space"]
-sky_material = SubResource("ProceduralSkyMaterial_space")
+sky_material = ExtResource("7_sky")
 
 [sub_resource type="Environment" id="Environment_space"]
 background_mode = 2
 sky = SubResource("Sky_space")
-ambient_light_source = 3
-ambient_light_color = Color(0.45, 0.52, 0.68, 1)
-ambient_light_energy = 0.55
+ambient_light_source = 2
+ambient_light_color = Color(0.42, 0.52, 0.78, 1)
+ambient_light_energy = 0.5
 tonemap_mode = 3
+tonemap_exposure = 0.95
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -63,14 +59,14 @@ environment = SubResource("Environment_space")
 ; Sol: ilumina la cara de los planetas que mira al módulo (viaja hacia +Z).
 [node name="SunLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.954480, 0, 0.298275, 0.163643, 0.836065, 0.523657, -0.249377, 0.548630, -0.798007, 0, 12, 0)
-light_energy = 1.2
+light_energy = 1.05
 shadow_enabled = true
 
 ; Relleno: luz suave desde el lado opuesto (sin sombras) para que las caras
 ; en sombra de los modelos no queden negras.
 [node name="FillLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.972806, 0, -0.231621, -0.116066, 0.865387, -0.487477, 0.200441, 0.501104, 0.841854, 0, 8, 0)
-light_energy = 0.45
+light_energy = 0.3
 shadow_enabled = false
 
 ; Iluminación interior: una lámpara por luminaria del techo. Sin sombras para
@@ -80,25 +76,25 @@ shadow_enabled = false
 [node name="Light_0" type="OmniLight3D" parent="InteriorLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.55, -4)
 light_color = Color(0.85, 0.9, 1, 1)
-light_energy = 1.6
+light_energy = 1.15
 omni_range = 10.0
 
 [node name="Light_1" type="OmniLight3D" parent="InteriorLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3.55, -4)
 light_color = Color(0.85, 0.9, 1, 1)
-light_energy = 1.6
+light_energy = 1.15
 omni_range = 10.0
 
 [node name="Light_2" type="OmniLight3D" parent="InteriorLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.55, 4)
 light_color = Color(0.85, 0.9, 1, 1)
-light_energy = 1.6
+light_energy = 1.15
 omni_range = 10.0
 
 [node name="Light_3" type="OmniLight3D" parent="InteriorLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3.55, 4)
 light_color = Color(0.85, 0.9, 1, 1)
-light_energy = 1.6
+light_energy = 1.15
 omni_range = 10.0
 
 ; ─────────────────────────────────────────────────────────────

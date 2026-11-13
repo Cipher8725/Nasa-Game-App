@@ -1,8 +1,8 @@
 [gd_scene load_steps=15 format=3]
 
-; Plataforma de la estación: un gran cubo gris sobre el que se apoya el módulo
-; habitable. El cubo es un PLACEHOLDER que se sustituirá por un mapa con
-; textura (ver `resources/station_platform_material.tres`).
+; Plataforma de la estación: un gran cubo de 60 m con regolita lunar sobre el que
+; se apoya el módulo habitable. El material vive en
+; `resources/station_platform_material.tres` (albedo + normales de la Luna).
 ;
 ; Piezas usadas directamente desde `res://assets/` (sin copiarlas):
 ;  - Molten Maps: pasarela, barandillas y módulos laterales.
@@ -102,16 +102,16 @@ transform = Transform3D(2.0, 0, -3.46, 0, 4, 0, 3.46, 0, 2.0, 15, -0.15, 3)
 ; Planta solar en el extremo izquierdo del cubo.
 [node name="SolarArray" type="Node3D" parent="Exterior"]
 
-[node name="Solar_0" parent="SolarArray" instance=ExtResource("9_solar")]
+[node name="Solar_0" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -14)
 
-[node name="Solar_1" parent="SolarArray" instance=ExtResource("9_solar")]
+[node name="Solar_1" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -11.3)
 
-[node name="Solar_2" parent="SolarArray" instance=ExtResource("9_solar")]
+[node name="Solar_2" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -8.6)
 
-[node name="Solar_3" parent="SolarArray" instance=ExtResource("9_solar")]
+[node name="Solar_3" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -5.9)
 
 ; Pequeño puesto avanzado y plataforma de aterrizaje, al fondo.

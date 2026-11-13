@@ -28,8 +28,14 @@
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_briefing.tscn" id="27_briefing"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_medbay.tscn" id="28_medbay"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_hydroponics.tscn" id="29_hydro"]
+[ext_resource type="Script" path="res://scripts/regolith_floor.gd" id="30_regolith"]
+[ext_resource type="Material" path="res://resources/mars_ground_material.tres" id="31_mars"]
+[ext_resource type="Script" path="res://scripts/window_glass.gd" id="32_glass"]
+[ext_resource type="Material" path="res://resources/window_glass_material.tres" id="33_glassmat"]
 
 [node name="StationInterior" type="Node3D" unique_id=591982817]
+script = ExtResource("30_regolith")
+floor_material = ExtResource("31_mars")
 
 [node name="FloorTiles" type="Node3D" parent="." unique_id=228743797]
 
@@ -120,6 +126,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.004, -4)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.004, -4)
 
 [node name="Walls" type="Node3D" parent="." unique_id=1014738766]
+script = ExtResource("32_glass")
+glass_material = ExtResource("33_glassmat")
+enabled = true
 
 [node name="Wall_Back_0" parent="Walls" unique_id=1162051074 instance=ExtResource("3_wall")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -9.6)
@@ -329,53 +338,34 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -13.
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.458833, -0.0019427538, 2.1631699)
 
 [node name="corridor_module2" parent="corridor_module2" unique_id=620345486 instance=ExtResource("21_e44fg")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.699995, -0.0019427538, 20.08017)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.699995, -0.0019427538, 16.12334)
 
 [node name="IMG_vestibulo" parent="." unique_id=1387140030 instance=ExtResource("22_e44fg")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27.418076, 0, 0.13273478)
 
 [node name="IMG_sala_de_mando" parent="." unique_id=1370044287 instance=ExtResource("23_ajx3t")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31.401691, 0, -27.617838)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 27.444862, 0, -27.617838)
 
 [node name="room_quarters" parent="." unique_id=1564317319 instance=ExtResource("25_5k81o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016598225, -0.017638206, 19.634491)
 
-; ─────────────────────────────────────────────────────────────
-; AMPLIACIÓN DE LA ESTACIÓN (hito de accesibilidad)
-; ─────────────────────────────────────────────────────────────
-; Tres puertas nuevas en la pared sur del módulo central (x = -8, 0, +8)
-; dan paso a las nuevas salas. Cada pasillo es un módulo corridor_module sin
-; rotar: su tubo queda en x = centro + 2,09 y mide 8,14 m de largo.
-
-
-; Sala de oxígeno: al sur de la sala del generador (puerta en su pared oeste).
-; La posición alinea su puerta exactamente con la del generador (-27,58 / -1,99).
-[node name="RoomOxygen" parent="." instance=ExtResource("26_oxigeno")]
+[node name="RoomOxygen" parent="." unique_id=158101272 instance=ExtResource("26_oxigeno")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -27.58, 0, -11.59)
 
-; ─────────────────────────────────────────────────────────────
-; CADENA DE SALAS NUEVAS (al norte de la estación)
-; ─────────────────────────────────────────────────────────────
-; Las salas miden 20 x 20 m, así que se encadenan con pasillos para que no se
-; solapen entre sí:
-;   cuartos → pasillo → sala de reuniones → pasillo → enfermería → pasillo →
-;   hidroponía (la sala más alejada del centro de la estación)
-
-[node name="Corridor_To_Briefing" parent="." instance=ExtResource("21_e44fg")]
+[node name="Corridor_To_Briefing" parent="." unique_id=1132488185 instance=ExtResource("21_e44fg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.09, 0, 33.23)
 
-[node name="RoomBriefing" parent="." instance=ExtResource("27_briefing")]
+[node name="RoomBriefing" parent="." unique_id=957541629 instance=ExtResource("27_briefing")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 47)
 
-[node name="Corridor_To_Medbay" parent="." instance=ExtResource("21_e44fg")]
+[node name="Corridor_To_Medbay" parent="." unique_id=1050007982 instance=ExtResource("21_e44fg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.09, 0, 60.83)
 
-[node name="RoomMedbay" parent="." instance=ExtResource("28_medbay")]
+[node name="RoomMedbay" parent="." unique_id=2108171314 instance=ExtResource("28_medbay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 74.4)
 
-[node name="Corridor_To_Hydroponics" parent="." instance=ExtResource("21_e44fg")]
+[node name="Corridor_To_Hydroponics" parent="." unique_id=1011809382 instance=ExtResource("21_e44fg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.09, 0, 88.23)
 
-; Hidroponía: la sala más alejada del centro de la estación.
-[node name="RoomHydroponics" parent="." instance=ExtResource("29_hydro")]
+[node name="RoomHydroponics" parent="." unique_id=896199044 instance=ExtResource("29_hydro")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 101.8)
