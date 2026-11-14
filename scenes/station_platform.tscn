@@ -1,132 +1,122 @@
-[gd_scene load_steps=15 format=3]
-
-; Plataforma de la estación: un gran cubo de 60 m con regolita lunar sobre el que
-; se apoya el módulo habitable. El material vive en
-; `resources/station_platform_material.tres` (albedo + normales de la Luna).
-;
-; Piezas usadas directamente desde `res://assets/` (sin copiarlas):
-;  - Molten Maps: pasarela, barandillas y módulos laterales.
-;  - KayKit Space Base Bits: depósitos, contenedores, camión, paneles
-;    solares, plataforma de aterrizaje y farolas del exterior.
-;
-; El exterior es decorado: no tiene colisiones (el jugador no sale del módulo).
+[gd_scene format=3 uid="uid://cyq8gblodi36g"]
 
 [ext_resource type="Material" path="res://resources/station_platform_material.tres" id="1_grey"]
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Catwalk_1.glb" id="2_catwalk"]
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Railing_Flat.glb" id="3_railing"]
-[ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Corridor_Boundary_4x8.glb" id="4_module"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargodepot_A.gltf" id="5_depot_a"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargodepot_B.gltf" id="6_depot_b"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargo_A_stacked.gltf" id="7_cargo"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/spacetruck_large.gltf" id="8_truck"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/solarpanel.gltf" id="9_solar"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/landingpad_large.gltf" id="10_pad"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/lander_A.gltf" id="11_lander"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/lights.gltf" id="12_light"]
-[ext_resource type="PackedScene" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/structure_low.gltf" id="13_structure"]
+[ext_resource type="PackedScene" uid="uid://bi85ykjaobl0u" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Catwalk_1.glb" id="2_catwalk"]
+[ext_resource type="PackedScene" uid="uid://bu16emg1m2unb" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Railing_Flat.glb" id="3_railing"]
+[ext_resource type="PackedScene" uid="uid://bn3e2qjpxagmx" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Corridor_Boundary_4x8.glb" id="4_module"]
+[ext_resource type="PackedScene" uid="uid://dyuls4s64qnje" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargodepot_A.gltf" id="5_depot_a"]
+[ext_resource type="PackedScene" uid="uid://b52s4nabjyob" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargodepot_B.gltf" id="6_depot_b"]
+[ext_resource type="PackedScene" uid="uid://bmotij35kq1gx" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/cargo_A_stacked.gltf" id="7_cargo"]
+[ext_resource type="PackedScene" uid="uid://c0c7yushmiyog" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/spacetruck_large.gltf" id="8_truck"]
+[ext_resource type="PackedScene" uid="uid://bsqq38k3fv5py" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/solarpanel.gltf" id="9_solar"]
+[ext_resource type="PackedScene" uid="uid://cbu7yt8cudyj" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/landingpad_large.gltf" id="10_pad"]
+[ext_resource type="PackedScene" uid="uid://bp5iis1we267b" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/lander_A.gltf" id="11_lander"]
+[ext_resource type="PackedScene" uid="uid://bj5wbq4s8si1m" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/lights.gltf" id="12_light"]
+[ext_resource type="PackedScene" uid="uid://cemyanyx8is3x" path="res://assets/KayKit_Space_Base_Bits_1.0_FREE/Assets/gltf/structure_low.gltf" id="13_structure"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_platform"]
-size = Vector3(60, 60, 60)
+size = Vector3(84, 60, 160)
 
-[node name="StationPlatform" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_kfvix"]
 
-; Cubo base: 60 m de lado. Su cara superior queda a y = -0.15 para que las
-; baldosas del suelo del módulo (que ocupan y = -0.14 .. 0.01) apoyen encima
-; sin solaparse ni producir z-fighting.
-[node name="BaseCube" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30.15, 0)
+[sub_resource type="BoxShape3D" id="BoxShape3D_51fql"]
+
+[node name="StationPlatform" type="Node3D" unique_id=1673998559]
+
+[node name="BaseCube" type="MeshInstance3D" parent="." unique_id=257314187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30.15, 37)
 mesh = SubResource("BoxMesh_platform")
 surface_material_override/0 = ExtResource("1_grey")
 
-; Pasarela de observación delante del ventanal (mirando hacia +Z).
-[node name="ViewDeck" type="Node3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BaseCube" unique_id=837584242]
+transform = Transform3D(84.602356, 0, 0, 0, 60.12656, 0, 0, 0, 161.63219, 0, 0, 0)
+shape = SubResource("BoxShape3D_kfvix")
 
-[node name="Catwalk_Left" parent="ViewDeck" instance=ExtResource("2_catwalk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, 13.5)
+[node name="ViewDeck" type="Node3D" parent="." unique_id=1515292892]
 
-[node name="Catwalk_Center" parent="ViewDeck" instance=ExtResource("2_catwalk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 13.5)
+[node name="Catwalk_Left" parent="ViewDeck" unique_id=1812449436 instance=ExtResource("2_catwalk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, -40.5)
 
-[node name="Catwalk_Right" parent="ViewDeck" instance=ExtResource("2_catwalk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.15, 13.5)
+[node name="Catwalk_Center" parent="ViewDeck" unique_id=1622350925 instance=ExtResource("2_catwalk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, -40.5)
 
-[node name="Railing_Front_Left" parent="ViewDeck" instance=ExtResource("3_railing")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, 15.9)
+[node name="Catwalk_Right" parent="ViewDeck" unique_id=1873918695 instance=ExtResource("2_catwalk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.15, -40.5)
 
-[node name="Railing_Front_Right" parent="ViewDeck" instance=ExtResource("3_railing")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.15, 15.9)
+[node name="Railing_Front_Left" parent="ViewDeck" unique_id=1685567869 instance=ExtResource("3_railing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, -42.9)
 
-[node name="Railing_Side_Left" parent="ViewDeck" instance=ExtResource("3_railing")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -3.15, 0.15, 13.5)
+[node name="Railing_Front_Right" parent="ViewDeck" unique_id=45933302 instance=ExtResource("3_railing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.15, -42.9)
 
-[node name="Railing_Side_Right" parent="ViewDeck" instance=ExtResource("3_railing")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.15, 0.15, 13.5)
+[node name="Railing_Side_Left" parent="ViewDeck" unique_id=1641614426 instance=ExtResource("3_railing")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -3.15, 0.15, -40.5)
 
-; Módulos auxiliares de la estación, a ambos lados de la pasarela.
-[node name="SideModules" type="Node3D" parent="."]
+[node name="Railing_Side_Right" parent="ViewDeck" unique_id=151950578 instance=ExtResource("3_railing")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.15, 0.15, -40.5)
 
-[node name="Module_Left" parent="SideModules" instance=ExtResource("4_module")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6, -0.15, 14.5)
+[node name="SideModules" type="Node3D" parent="." unique_id=777295466]
 
-[node name="Module_Right" parent="SideModules" instance=ExtResource("4_module")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.6, -0.15, 14.5)
+[node name="Module_Left" parent="SideModules" unique_id=147348572 instance=ExtResource("4_module")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33, -0.15, 40)
 
-; ─────────────────────────────────────────────────────────────
-; Exterior (KayKit). Todo apoya sobre la cara superior del cubo (y = -0.15).
-; ─────────────────────────────────────────────────────────────
-[node name="Exterior" type="Node3D" parent="."]
+[node name="Module_Right" parent="SideModules" unique_id=2088533278 instance=ExtResource("4_module")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.5, -0.15, 40)
 
-; Zona de carga, a la izquierda del módulo.
-[node name="CargoDepot_A" parent="Exterior" instance=ExtResource("5_depot_a")]
-transform = Transform3D(2.445369, 0, -0.519779, 0, 2.5, 0, 0.519779, 0, 2.445369, -17, -0.15, -2)
+[node name="Exterior" type="Node3D" parent="." unique_id=1266551670]
 
-[node name="CargoDepot_B" parent="Exterior" instance=ExtResource("6_depot_b")]
-transform = Transform3D(1.993877, 0, 0.929760, 0, 2.2, 0, -0.929760, 0, 1.993877, -16, -0.15, 5)
+[node name="CargoDepot_A" parent="Exterior" unique_id=2067701330 instance=ExtResource("5_depot_a")]
+transform = Transform3D(2.445369, 0, -0.519779, 0, 2.5, 0, 0.519779, 0, 2.445369, -12, -0.15, -34)
 
-; Contenedores apilados a la derecha del módulo.
-[node name="CargoStack_0" parent="Exterior" instance=ExtResource("7_cargo")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 13.5, -0.15, -11)
+[node name="CargoDepot_B" parent="Exterior" unique_id=964812465 instance=ExtResource("6_depot_b")]
+transform = Transform3D(1.993877, 0, 0.92976, 0, 2.2, 0, -0.92976, 0, 1.993877, -4, -0.15, -36)
 
-[node name="CargoStack_1" parent="Exterior" instance=ExtResource("7_cargo")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 17, -0.15, -11)
+[node name="CargoStack_0" parent="Exterior" unique_id=629448791 instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 5, -0.15, -34)
 
-[node name="CargoStack_2" parent="Exterior" instance=ExtResource("7_cargo")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 13.5, -0.15, -7.5)
+[node name="CargoStack_1" parent="Exterior" unique_id=571013395 instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 9, -0.15, -34)
 
-[node name="CargoStack_3" parent="Exterior" instance=ExtResource("7_cargo")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 17, -0.15, -7.5)
+[node name="CargoStack_2" parent="Exterior" unique_id=490762894 instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 5, -0.15, -30)
 
-[node name="SpaceTruck" parent="Exterior" instance=ExtResource("8_truck")]
-transform = Transform3D(2.0, 0, -3.46, 0, 4, 0, 3.46, 0, 2.0, 15, -0.15, 3)
+[node name="CargoStack_3" parent="Exterior" unique_id=1399585094 instance=ExtResource("7_cargo")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 9, -0.15, -30)
 
-; Planta solar en el extremo izquierdo del cubo.
-[node name="SolarArray" type="Node3D" parent="Exterior"]
+[node name="SpaceTruck" parent="Exterior" unique_id=900279540 instance=ExtResource("8_truck")]
+transform = Transform3D(2, 0, -3.46, 0, 4, 0, 3.46, 0, 2, 13, -0.15, -25)
 
-[node name="Solar_0" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -14)
+[node name="SolarArray" type="Node3D" parent="Exterior" unique_id=785859093]
 
-[node name="Solar_1" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -11.3)
+[node name="Solar_0" parent="Exterior/SolarArray" unique_id=518939248 instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -38, -0.15, -40)
 
-[node name="Solar_2" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -8.6)
+[node name="Solar_1" parent="Exterior/SolarArray" unique_id=1896477916 instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -38, -0.15, -37.3)
 
-[node name="Solar_3" parent="Exterior/SolarArray" instance=ExtResource("9_solar")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -21, -0.15, -5.9)
+[node name="Solar_2" parent="Exterior/SolarArray" unique_id=816200159 instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -38, -0.15, -34.6)
 
-; Pequeño puesto avanzado y plataforma de aterrizaje, al fondo.
-[node name="Outpost" parent="Exterior" instance=ExtResource("13_structure")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -16, -0.15, 15)
+[node name="Solar_3" parent="Exterior/SolarArray" unique_id=1469636911 instance=ExtResource("9_solar")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -38, -0.15, -31.9)
 
-[node name="LandingPad" parent="Exterior" instance=ExtResource("10_pad")]
+[node name="Outpost" parent="Exterior" unique_id=1020107284 instance=ExtResource("13_structure")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -24, -0.15, 60)
+
+[node name="LandingPad" parent="Exterior" unique_id=362467440 instance=ExtResource("10_pad")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 19, -0.15, 15)
 
-[node name="Lander" parent="Exterior" instance=ExtResource("11_lander")]
+[node name="Lander" parent="Exterior" unique_id=340199806 instance=ExtResource("11_lander")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 19, 1.35, 15)
 
-; Farolas que delimitan la plataforma de aterrizaje.
-[node name="PadLight_Left" parent="Exterior" instance=ExtResource("12_light")]
+[node name="PadLight_Left" parent="Exterior" unique_id=1416499135 instance=ExtResource("12_light")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 13, -0.15, 19)
 
-[node name="PadLight_Right" parent="Exterior" instance=ExtResource("12_light")]
+[node name="PadLight_Right" parent="Exterior" unique_id=1750011189 instance=ExtResource("12_light")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 25, -0.15, 19)
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1149823738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7431999, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=875838558]
+shape = SubResource("BoxShape3D_51fql")

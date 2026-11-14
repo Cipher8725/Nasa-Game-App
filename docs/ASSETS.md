@@ -43,27 +43,33 @@ godot --headless --path . --import
 
 | Escena | Contenido |
 |--------|-----------|
-| `scenes/station_platform.tscn` | Cubo de 60 m con regolita lunar + pasarela y módulos laterales (Molten Maps) + exterior KayKit |
-| `scenes/habitat_decor.tscn` | Interior del módulo: suelo con regolita marciana, paredes, techo, ventanal de cristal claro y props (Molten Maps) |
+| `scenes/station_platform.tscn` | Bloque base de 84 × 160 m (60 m de alto) con material sólido + pasarela y módulos laterales (Molten Maps) + exterior KayKit |
+| `scenes/habitat_decor.tscn` | Interior del módulo: suelo con el material original del pack, paredes, techo, ventanal de cristal claro y props (Molten Maps) |
 | `scenes/habitat.tscn` | Colisiones, consolas, luces, plataforma, decorado y espacio exterior |
 | `scenes/console.tscn` | Consola de recurso sobre `Command_Console.glb` (Molten Maps) |
 
-## Cubo gris de la estación → regolita lunar
+## Bloque base de la estación
 
-La estación se apoya sobre un cubo de 60 × 60 × 60 m cuya cara superior está
-en `y = -0.15` (las baldosas del suelo ocupan `y = -0.14 .. 0.01`).
+La estación se apoya sobre un bloque de **84 × 160 × 60 m** (`BoxMesh`) cuya cara
+superior está en `y = -0.15` (las baldosas del suelo ocupan `y = -0.14 .. 0.01`).
+Está centrado en `(0, -30.15, 37)` para cubrir todo el complejo, incluidas las
+salas del norte: el AABB real de `scenes/habitat_decor.tscn` es
+`x = -37,95 .. +37,44 · z = -37,62 .. +111,8`, y la plataforma llega a
+`x = -42 .. +42 · z = -43 .. +117` (~4 m de margen).
 
 El material está aislado en un único archivo:
 
 ```
-resources/station_platform_material.tres   → regolita lunar (albedo + normal, uv1_scale = 12)
+resources/station_platform_material.tres   → StationPlatformMetal
+                                             (sólido: albedo_color gris, metallic 0.15, roughness 0.92)
 ```
 
-`uv1_scale = 12` reparte 12 repeticiones por cara del cubo (una baldosa de
-textura cada 5 m). Si se cambia el tamaño del cubo, ajustar la escala para
-mantener esa densidad.
+Es un material **sin texturas**: desde el Hito 12 el proyecto no carga las
+regolitas generadas con IA en ninguna superficie. Para dar detalle al bloque,
+crear otro `.tres` y asignarlo en `scenes/station_platform.tscn`.
 
-Para volver a un cubo liso, poner `albedo_texture = null` y `albedo_color` gris.
+Si se añaden o se mueven salas hay que volver a medir el AABB del interior y
+actualizar `BoxMesh_platform` y la transformación de `BaseCube`.
 
 ## Texturas generadas con IA
 
@@ -72,9 +78,9 @@ propias y pesan 1,69 MB en total). **Ninguna llega a 4K ni a Full HD:**
 
 | Archivo | Tamaño | Uso |
 |---------|--------|-----|
-| `sky_space.webp` | 2048×1024 (q95) | Panorámica equirectangular del cielo |
-| `moon_regolith.webp` + `_normal.webp` | 1024² (q90) / 512² (q92) | Regolita lunar del cubo base |
-| `mars_regolith.webp` + `_normal.webp` | 1024² (q90) / 512² (q92) | Suelo interior del hábitat |
+| `sky_space.webp` | 2048×1024 (q95) | Panorámica equirectangular del cielo (en uso) |
+| `moon_regolith.webp` + `_normal.webp` | 1024² (q90) / 512² (q92) | RESERVADA: futuro nivel lunar (no se carga) |
+| `mars_regolith.webp` + `_normal.webp` | 1024² (q90) / 512² (q92) | RESERVADA: futuro nivel marciano (no se carga) |
 
 Se generaron con la API de **Layer** (`LAYER_API_KEY`, modelo `flux-3-image`,
 1 crédito por imagen) y se procesaron con:
@@ -103,11 +109,21 @@ marciano de regolita rojiza, piedras pequeñas y grietas de barro, vista cenital
 | Textura | Material | Dónde se aplica |
 |---------|----------|-----------------|
 | Cielo | `resources/sky_space_material.tres` (`PanoramaSkyMaterial`) | `WorldEnvironment` de `scenes/habitat.tscn` |
-| Luna | `resources/station_platform_material.tres` | `StationPlatform/BaseCube` |
-| Marte | `resources/mars_ground_material.tres` (triplanar de mundo) | `scripts/regolith_floor.gd` en el nodo `StationInterior` de `scenes/habitat_decor.tscn` (257 mallas de suelo) |
 
-Para **desactivar** el suelo marciano: desmarcar `enabled` en el nodo
-`StationInterior`. Para **cambiar el cielo**: sustituir `panorama` en
+Las regolitas **no se aplican en ninguna parte**. Sus materiales
+(`resources/moon_ground_material.tres` y `resources/mars_ground_material.tres`)
+quedan reservados para un futuro nivel lunar/marciano:
+
+- El nodo `StationInterior` de `scenes/habitat_decor.tscn` lleva
+  `enabled = false`, así que `scripts/regolith_floor.gd` no toca las 257 mallas
+  de suelo y se ve el material original del pack Molten Maps (incluidas las
+  franjas de peligro amarillas y negras).
+- El bloque base usa `resources/station_platform_material.tres` (sólido, sin
+  textura).
+
+Para **volver a activar** un suelo de regolita: asignar el `.tres`
+correspondiente a `floor_material` en el nodo `StationInterior` y poner
+`enabled = true`. Para **cambiar el cielo**: sustituir `panorama` en
 `resources/sky_space_material.tres` por otra equirectangular 2:1.
 
 ### Cristal de las ventanas
@@ -135,7 +151,7 @@ $godot = "H:\Godot V4.7.2\Godot_v4.7.2-stable_win64_console.exe"
 
 - Las copias del mismo asset (baldosas y paneles repetidos).
 - Los grupos `Floor` y `Ceiling` (superficies de apoyo).
-- El subárbol `StationPlatform` (el cubo y el decorado exterior).
+- El subárbol `StationPlatform` (el bloque base y el decorado exterior).
 - Los contactos de borde (< 0,05 m³).
 
 ## Añadir una pieza de un pack

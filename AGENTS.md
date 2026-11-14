@@ -63,7 +63,7 @@ Tienes acceso a servicios en la nube para generar recursos gráficos externos si
    - Uso: Invoca esta API cuando el diseño requiera un asset tridimensional específico que no pueda resolverse mediante primitivas geométricas (*greyboxing*). Exporta el resultado en formato `.glb` o `.obj` directamente dentro de la carpeta `res://ai_assets/`.
 
 2. Texturas y Materiales PBR (Fal.ai u otras APIs configuradas):
-   - Variable de entorno de autenticación: `FAL_KEY` (o `TEXTURE_API_KEY`)
+   - Variable de entorno de autenticación: `LAYER_API_KEY` (o `TEXTURE_API_KEY`)
    - Uso: Invoca la API para generar mapas de texturas (Albedo, Normal) cuando se requiera realismo en superficies concretas. Guarda los archivos descargados en la ruta `res://ai_assets/`.
 
 # REGLA DE ORO PARA RECURSOS:

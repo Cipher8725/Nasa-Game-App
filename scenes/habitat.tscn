@@ -2,9 +2,9 @@
 
 ; Módulo habitable de la estación espacial.
 ;
-; La estación se apoya sobre un gran cubo (StationPlatform) texturizado con
-; regolita lunar. La geometría del módulo viene de
-; `scenes/habitat_decor.tscn` y las consolas de `scenes/console.tscn`.
+; La estación se apoya sobre un gran bloque (StationPlatform) de material sólido.
+; La geometría del módulo viene de `scenes/habitat_decor.tscn` y las consolas de
+; `scenes/console.tscn`.
 ; El cielo es una panorámica realista (`resources/sky_space_material.tres`).
 ;
 ; FÍSICA: las paredes del pack son solo visuales; aquí están las cajas de
@@ -27,8 +27,8 @@ sky_material = ExtResource("7_sky")
 background_mode = 2
 sky = SubResource("Sky_space")
 ambient_light_source = 2
-ambient_light_color = Color(0.42, 0.52, 0.78, 1)
-ambient_light_energy = 0.5
+ambient_light_color = Color(0.5, 0.56, 0.7, 1)
+ambient_light_energy = 0.55
 tonemap_mode = 3
 tonemap_exposure = 0.95
 

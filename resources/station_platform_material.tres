@@ -1,25 +1,18 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3]
+[gd_resource type="StandardMaterial3D" format=3]
 
-; Regolita lunar para el cubo base de la estación (StationPlatform/BaseCube).
+; Material del cubo base de la estación (`StationPlatform/BaseCube`).
 ;
-; Textura generada con IA y procesada con `tools/process_ai_textures.py`
-; (repetible sin costuras). El mapa de normales da relieve a los cráteres con la
-; luz del sol.
+; Material SÓLIDO, sin texturas: el proyecto ya no carga las regolitas
+; generadas con IA (`ai_assets/textures/moon_regolith*.webp` ni
+; `mars_regolith*.webp`) en ninguna superficie.
 ;
-; `uv1_scale = 12` reparte 12 repeticiones por cara del cubo de 60 m, es decir
-; una baldosa de textura cada 5 m. Si se cambia el tamaño del cubo hay que
-; ajustar la escala para mantener esa densidad.
-
-[ext_resource type="Texture2D" path="res://ai_assets/textures/moon_regolith.webp" id="1_albedo"]
-[ext_resource type="Texture2D" path="res://ai_assets/textures/moon_regolith_normal.webp" id="2_normal"]
+; El cubo es decorado: la iluminación direccional + el relleno le dan el
+; volumen, y al ser una superficie enorme una textura repetida se notaría
+; más que un color plano. Si en el futuro se quiere detalle, crear un
+; material nuevo y asignarlo en `scenes/station_platform.tscn`.
 
 [resource]
-resource_name = "StationPlatformMoon"
-albedo_texture = ExtResource("1_albedo")
-metallic = 0.0
-roughness = 0.96
-normal_enabled = true
-normal_texture = ExtResource("2_normal")
-normal_scale = 0.85
-uv1_scale = Vector3(12, 12, 1)
-texture_filter = 5
+resource_name = "StationPlatformMetal"
+albedo_color = Color(0.42, 0.44, 0.48, 1)
+metallic = 0.15
+roughness = 0.92

@@ -1,0 +1,30 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3]
+
+; Regolita lunar (RESERVADA, NO USADA).
+;
+; Desde el Hito 12 el suelo del hábitat usa el material ORIGINAL del pack
+; Molten Maps y el bloque base de la estación un material sólido sin texturas:
+; ni esta regolita ni la marciana se cargan en el juego.
+;
+; Se conserva para un futuro nivel lunar/marciano. Si se recupera: asignarlo a
+; `floor_material` del nodo `StationInterior` de `scenes/habitat_decor.tscn` y
+; poner `enabled = true` en ese mismo nodo.
+;
+; Proyección triplanar en espacio de mundo: la textura es continua entre
+; baldosas, salas y pasillos y no se repite una vez por baldosa.
+
+[ext_resource type="Texture2D" path="res://ai_assets/textures/moon_regolith.webp" id="1_albedo"]
+[ext_resource type="Texture2D" path="res://ai_assets/textures/moon_regolith_normal.webp" id="2_normal"]
+
+[resource]
+resource_name = "MoonRegolith"
+albedo_texture = ExtResource("1_albedo")
+metallic = 0.0
+roughness = 0.96
+normal_enabled = true
+normal_texture = ExtResource("2_normal")
+normal_scale = 0.6
+uv1_triplanar = true
+uv1_world_triplanar = true
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+texture_filter = 5

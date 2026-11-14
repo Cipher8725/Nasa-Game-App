@@ -1,0 +1,314 @@
+[gd_scene load_steps=10 format=3]
+
+; Menú principal del juego: primera escena que se ejecuta (`run/main_scene`).
+;
+; Diseño "para niños" (7-12 años), coherente con el HUD de la misión:
+;  * Fondo: la misma panorámica espacial del juego, oscurecida, para que el menú
+;    ya muestre el tono del juego.
+;  * Título grande con contorno y botones de 64 px de alto.
+;  * Dos pantallas en el mismo archivo: inicio (`MainPanel`) y selector de
+;    destino (`LevelPanel`, oculto al arrancar). El script solo alterna la
+;    visibilidad; no hay transiciones ni animaciones que puedan fallar.
+;  * El nivel de Marte está visible pero desactivado (aún no existe el mapa).
+;
+; El script `scripts/main_menu.gd` necesita estos nombres únicos (%):
+; %MainPanel %LevelPanel %StartButton %MoonButton %MarsButton %BackButton.
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_menu"]
+[ext_resource type="Texture2D" path="res://ai_assets/textures/sky_space.webp" id="2_sky"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+content_margin_left = 30.0
+content_margin_top = 26.0
+content_margin_right = 30.0
+content_margin_bottom = 26.0
+bg_color = Color(0.05, 0.08, 0.15, 0.92)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.45, 0.72, 1, 0.55)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_right = 28
+corner_radius_bottom_left = 28
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+content_margin_left = 26.0
+content_margin_top = 14.0
+content_margin_right = 26.0
+content_margin_bottom = 14.0
+bg_color = Color(0.12, 0.2, 0.34, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.72, 1, 0.7)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+content_margin_left = 26.0
+content_margin_top = 14.0
+content_margin_right = 26.0
+content_margin_bottom = 14.0
+bg_color = Color(0.2, 0.34, 0.55, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.62, 0.85, 1, 0.95)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+content_margin_left = 26.0
+content_margin_top = 14.0
+content_margin_right = 26.0
+content_margin_bottom = 14.0
+bg_color = Color(0.31, 0.51, 0.76, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.95, 1, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.85, 0.4, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_disabled"]
+content_margin_left = 26.0
+content_margin_top = 14.0
+content_margin_right = 26.0
+content_margin_bottom = 14.0
+bg_color = Color(0.09, 0.11, 0.15, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.35, 0.42, 0.6)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Backdrop" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_sky")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.02, 0.05, 0.6)
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = 36.0
+offset_right = -48.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Title" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.09, 1)
+theme_override_constants/outline_size = 12
+theme_override_font_sizes/font_size = 72
+text = "NaSA-GAME"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.82, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "ENTRENADOR DE ASTRONAUTAS · nombre provisional"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Layout"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MainPanel" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="MainBox" type="VBoxContainer" parent="Layout/MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="StartButton" type="Button" parent="Layout/MainPanel/MainBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+focus_neighbor_top = NodePath("../QuitButton")
+theme_override_colors/font_color = Color(0.96, 0.99, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.6, 0.68, 1)
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_btn_disabled")
+text = "INICIAR MISIÓN"
+
+[node name="QuitButton" type="Button" parent="Layout/MainPanel/MainBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.99, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.6, 0.68, 1)
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_btn_disabled")
+text = "SALIR"
+
+[node name="LevelPanel" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(680, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="LevelBox" type="VBoxContainer" parent="Layout/LevelPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LevelTitle" type="Label" parent="Layout/LevelPanel/LevelBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "ELIGE DESTINO"
+horizontal_alignment = 1
+
+[node name="MoonButton" type="Button" parent="Layout/LevelPanel/LevelBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.99, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.6, 0.68, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_btn_disabled")
+text = "LUNA · Base Selene"
+
+[node name="MoonHint" type="Label" parent="Layout/LevelPanel/LevelBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.92, 0.68, 1)
+theme_override_font_sizes/font_size = 17
+text = "Nivel disponible · 3 minutos de misión"
+horizontal_alignment = 1
+
+[node name="MarsButton" type="Button" parent="Layout/LevelPanel/LevelBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 62)
+layout_mode = 2
+disabled = true
+theme_override_colors/font_color = Color(0.96, 0.99, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.6, 0.68, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_btn_disabled")
+text = "MARTE · Valle Marineris"
+
+[node name="MarsHint" type="Label" parent="Layout/LevelPanel/LevelBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.35, 1)
+theme_override_font_sizes/font_size = 17
+text = "Próximamente"
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="Layout/LevelPanel/LevelBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.6, 0.68, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_btn_disabled")
+text = "VOLVER"
+
+[node name="Footer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -46.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.6, 0.7, 0.85, 1)
+theme_override_font_sizes/font_size = 16
+text = "Versión 0.2 · Prototipo · Nombre provisional"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="Layout/MainPanel/MainBox/StartButton" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Layout/MainPanel/MainBox/QuitButton" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Layout/LevelPanel/LevelBox/MoonButton" to="." method="_on_moon_pressed"]
+[connection signal="pressed" from="Layout/LevelPanel/LevelBox/MarsButton" to="." method="_on_mars_pressed"]
+[connection signal="pressed" from="Layout/LevelPanel/LevelBox/BackButton" to="." method="_on_back_pressed"]

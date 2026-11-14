@@ -7,7 +7,7 @@ extends Node
 ##  - Las copias del mismo asset (baldosas y paneles repetidos).
 ##  - Los contactos con el SUELO y el TECHO: las piezas se apoyan/encajan en
 ##    ellos y sus AABB se intersectan por diseño.
-##  - La plataforma exterior (StationPlatform): el cubo base de 60 m y la
+##  - La plataforma exterior (StationPlatform): el bloque base de 84 × 160 m y la
 ##    pasarela son decorado; su AABB envolvería todo el módulo.
 ##  - Los contactos de borde (volumen < 0,05 m³).
 

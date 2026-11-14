@@ -332,7 +332,104 @@ sistemas.
     `mipmaps/generate = true`: Godot no las recomprime a VRAM al usarlas en 3D.
 - Suite de 8 pruebas + `--headless --import` en verde tras los cambios.
 
+### Hito 12 — Suelo sin regolita y plataforma a la medida del hábitat (2026-11-13)
+
+- **Bug corregido: todo el suelo del hábitat se veía con regolita ("Marte").**
+  El nodo `StationInterior` de `scenes/habitat_decor.tscn` tenía
+  `floor_material = moon_ground_material.tres`, así que `RegolithFloor`
+  sobrescribía **257 mallas** con la textura triplanar, incluidas las franjas de
+  peligro `Hazard_Floor_1` (de ahí los manchones blancos: las rayas amarillas y
+  negras se perdían). Ahora:
+  - `StationInterior` lleva `enabled = false` y ya no tiene `floor_material`; se
+    eliminó el `ext_resource` de `moon_ground_material.tres`.
+  - El suelo muestra el **material original del pack Molten Maps**
+    (`Floor_Tile_Metal` y las baldosas propias de cada sala), franjas de peligro
+    incluidas.
+  - `scripts/regolith_floor.gd`, `resources/moon_ground_material.tres` y
+    `resources/mars_ground_material.tres` se conservan **reservados** y
+    documentados para un futuro nivel lunar/marciano: no se cargan en el juego.
+- **`resources/station_platform_material.tres` ya no usa textura**: pasó de
+  regolita lunar (albedo + normal, `uv1_scale = 12`) a material sólido
+  (`resource_name = "StationPlatformMetal"`, `albedo_color` gris
+  `(0.42, 0.44, 0.48)`, `metallic = 0.15`, `roughness = 0.92`). **Ninguna
+  textura de regolita se carga en el juego**, ni lunar ni marciana.
+- **`scenes/station_platform.tscn` redimensionado**: de un cubo de 60 m a un
+  `BoxMesh` de **84 × 60 × 160 m** centrado en `(0, -30.15, 37)`. La cara
+  superior sigue en `y = -0.15` (las baldosas ocupan `y = -0.14 .. 0.01`, sin
+  z-fighting) y la huella `x -42..42 · z -43..117` cubre con ~4 m de margen el
+  AABB real del interior (`x -37,95..37,44 · z -37,62..111,8`), que incluye la
+  hilera de salas del norte hasta hidroponía.
+- **Decorado exterior recolocado** (medido con intersecciones de AABB): antes
+  había piezas enterradas dentro de salas, porque el complejo creció hacia el
+  norte en los hitos 7-10. Nuevo reparto, solo en zonas libres:
+  - Balcón `ViewDeck` al borde **sur** (`z = -40,5`, barandillas a `-42,9`);
+    antes estaba delante del ventanal norte, que hoy ocupa `room_quarters`.
+  - `SideModules` en el ala oeste `(-33 / -27,5, -0.15, 40)`.
+  - Patio de carga al sur: `CargoDepot_A (-12,-34)`, `CargoDepot_B (-4,-36)`,
+    `CargoStack_0..3 (5/9, -34/-30)`, `SpaceTruck (13,-25)`.
+  - Planta solar al suroeste (`x = -38`, `z = -40/-37,3/-34,6/-31,9`).
+  - `Outpost` en el oeste-norte `(-24, -0.15, 60)`.
+  - Plataforma de aterrizaje, lander y farolas sin cambios al este (`z = 15/19`).
+  - Zonas libres documentadas en la cabecera de `station_platform.tscn`.
+- **Verificación**: script de diagnóstico (ya eliminado) confirmó
+  `TEXTURAS REGOLITA EN USO: 0` y `SOLAPES DECORADO/SALAS: 0`; capturas
+  interiores (baldosas metálicas del pack + franjas de peligro) y vistas cenital
+  y oblicua con todas las salas sobre la plataforma.
+- **Tests**: se corrigió la cabecera de `tests/asset_collision_test.gd` (hablaba
+  del "cubo de 60 m"). Suite de 9 pruebas + `--headless --import` en verde.
+- **Ruido conocido (no es regresión)**: en `--headless` el renderizador dummy
+  emite `ERROR: Parameter "material" is null.`
+  (`material_storage.cpp:264`). Se reprodujo con escenas aisladas y con el menú
+  solo (sin emitirlo), y no afecta a ninguna prueba: es del renderizador dummy,
+  no del proyecto.
+
+### Hito 13 — Menú principal (2026-11-14)
+
+- **La escena de arranque pasó a ser el menú**: `project.godot` tiene
+  `run/main_scene="res://scenes/main_menu.tscn"`. El menú (`scripts/main_menu.gd`,
+  `scenes/main_menu.tscn`) tiene dos pantallas en el mismo archivo: inicio
+  (`%MainPanel`, botón `%StartButton`) y selector de destino (`%LevelPanel`,
+  `%MoonButton`, `%MarsButton`, `%BackButton`). Solo el nivel Luna está activo
+  (`LEVEL_MOON = "res://scenes/main.tscn"`); Marte se ve pero está desactivado
+  (`LEVEL_MARS = ""`).
+- **Test**: `tests/menu_test.gd` comprueba que la escena de arranque es el menú,
+  que el selector abre y cierra y que Marte sigue desactivado.
+- El juego (`scenes/main.tscn` + `GameManager`) no cambia: el menú solo cambia
+  de escena.
+
+### Hito 14 — Puertas que se abren solas (2026-11-14)
+
+- **Puerta corredera con dos hojas** (`scenes/DoorAnim.tscn`): las hojas se
+  deslizan en X con la animación `Open` (0,45 s). El script
+  `scripts/animated_door.gd` (`class_name AnimatedDoor`) mide la distancia
+  horizontal al jugador (grupo `player`) y **abre a 3,5 m o menos** y **cierra
+  al alejarse**.
+- **Cierre en reversa**: se usa una sola animación. El cierre es la misma
+  animación reproducida al revés (`play(nombre, 0.0, -1.0, false)`), así que no
+  hay dos animaciones que sincronizar y una interrupción a mitad no produce
+  saltos. Detalle de Godot 4.7: hay que **pasar la velocidad en la llamada a
+  `play()`**; si se deja el valor por defecto, una animación ya terminada no
+  vuelve a reproducirse (verificado con un script de sonda).
+- **Sin colisión**: la puerta no tiene `CollisionShape3D`. Se abre antes de que
+  llegue el jugador, así que nunca le cierra el paso y el test de accesibilidad
+  (`station_access_test`) sigue viendo el hueco libre.
+- **Colocación**: 26 puertas en las 17 habitaciones de `scenes/rooms/` (26 huecos
+  reales) y 3 en el módulo central (`scenes/habitat_decor.tscn`: norte, oeste y
+  este). Todas bajo el nodo `Walls` de su sala, centradas en el hueco del panel
+  `Wall_With_Door_Grey` (hueco real: **1,39 m de ancho × 2,06 m de alto**,
+  medido sobre el `.glb` del pack). Transform de instancia: escala
+  `(1.6, 2.0, 1.0)` y `y = 1.0` (la hoja apoya en el suelo y llega al dintel).
+- **Nombre de las mallas de la puerta**: `Wall With Door Grey_A` / `_B`. El test
+  de colisiones agrupa las mallas por el nombre del nodo de malla, así que con
+  ese nombre la puerta cae en el mismo grupo que el panel del pack y su solape
+  (intencionado: la puerta va dentro del hueco) no se reporta como error.
+- **Verificación**: script temporal (ya eliminado) comprobó en las 18 escenas que
+  las 46 puertas están centradas en su panel y apoyan en el suelo, y que en el
+  hábitat las 20 puertas montadas abren y cierran con el jugador cerca/lejos.
+  Suite de 9 pruebas en verde.
+
 ## 3. ¿Cómo se hizo?
+
 
 ### Arquitectura
 
@@ -341,7 +438,7 @@ scenes/main.tscn  (Node3D + mission_controller.gd)
 ├── Habitat       → instancia de scenes/habitat.tscn
 │   ├── WorldEnvironment + SunLight + FillLight
 │   ├── Floor / WallBack / WallFront / WallLeft / WallRight  (StaticBody3D + CollisionShape3D)
-│   ├── StationPlatform → scenes/station_platform.tscn (cubo de 60 m + pasarela + exterior KayKit)
+│   ├── StationPlatform → scenes/station_platform.tscn (bloque de 84 × 160 m + pasarela + exterior KayKit)
 │   ├── Interior        → scenes/habitat_decor.tscn (suelo, paredes, techo y props)
 │   ├── ConsoleOxygen / ConsoleEnergy / ConsoleWater / ConsoleStructure → scenes/console.tscn
 │   ├── InteriorLights  → 4 OmniLight3D (uno por luminaria del techo)
@@ -417,14 +514,14 @@ con números por frame), pero la señal `resource_changed` se emite a **10 Hz**
 `Time.get_unix_time_from_system()` (verificado: `OS.get_unix_time()` ya no
 existe en 4.7.2).
 
-### Materiales aplicados por script (regolita y cristal)
+### Materiales aplicados por script (cristal y regolita reservada)
 
 Cambiar a mano cientos de `material_override` en el `.tscn` es frágil, así que
 dos scripts de un solo propósito hacen el trabajo al arrancar:
 
 | Script | Nodo | Qué hace |
 |--------|------|----------|
-| `scripts/regolith_floor.gd` (`RegolithFloor`) | `StationInterior` de `habitat_decor.tscn` | Recorre `Floor`/`FloorTiles` y pone la regolita marciana (triplanar de mundo) |
+| `scripts/regolith_floor.gd` (`RegolithFloor`) | `StationInterior` de `habitat_decor.tscn` | **Desactivado** (`enabled = false` desde el Hito 12): no toca el suelo. Si se activa, recorre `Floor`/`FloorTiles` y pone la regolita de `floor_material` (triplanar de mundo) |
 | `scripts/window_glass.gd` (`WindowGlass`) | `Walls` de `habitat_decor.tscn` | Sustituye solo las superficies de material "... Glass" por cristal transparente |
 
 Ambos siguen el mismo patrón: `@export var enabled` para volver al estado
@@ -436,10 +533,11 @@ código, un contador `get_applied_*_count()` para las pruebas y un `print` únic
 
 ### Pendiente inmediato (siguiente hito)
 
-1. ~~**Textura del cubo de la estación**~~ → **hecho en el Hito 11**: regolita
-   lunar en `resources/station_platform_material.tres`. Queda opcional subir la
-   resolución del suelo (1024² es deliberado: nada de 4K) o añadir una capa de
-   detalle a distancia media.
+1. ~~**Textura del cubo de la estación**~~ → **resuelto en el Hito 12**: el
+   bloque base usa un material sólido sin texturas
+   (`resources/station_platform_material.tres`) y la regolita quedó reservada
+   para el futuro nivel marciano. Si se quiere detalle en la plataforma, crear un
+   `.tres` nuevo (nada de regolitas en el nivel lunar actual).
 2. **Audio**: alarmas de recurso crítico, impacto de emergencia y confirmación
    de reparación. Usar `AudioStreamPlayer` definido en las escenas.
 3. **Assets finales del jugador**: el astronauta sigue siendo una cápsula
@@ -468,6 +566,12 @@ código, un contador `get_applied_*_count()` para las pruebas y un `print` únic
 12. **Colocar los módulos de `scenes/rooms/` en el mapa**: están listos y
     verificados, pero el arquitecto tiene que indicar dónde va cada uno y con
     qué orientación (la puerta mira siempre a −Z).
+13. **Dos huecos de puerta de `room_quarters` sin paso real**: los paneles
+    `Wall_South_5` (ala este) y `Wall_South_6` (ala oeste) son huecos de puerta
+    visual, pero su pared sigue siendo maciza en `Collision` (no están partidos
+    en dos tramos). Ahora tienen puerta animada (Hito 14), pero el paso sigue
+    cerrado: hay que partir su colisión como en el resto de salas si van a
+    conectar con otra habitación.
 
 ### Deuda técnica conocida
 
@@ -485,6 +589,13 @@ código, un contador `get_applied_*_count()` para las pruebas y un `print` únic
 16. Los minijuegos son deliberadamente sencillos (el arquitecto los mejorará
     después): el de oxígeno solo mide pulsaciones y el de cables solo 4
     conexiones fijas. La dificultad está en los `@export` de cada script.
+17. **`tests/room_collision_test.gd` no está comprobando nada**: usa
+    `mesh_instance.visible_in_tree`, que es una propiedad de `CanvasItem`
+    (2D). En `MeshInstance3D` (3D) lanza `SCRIPT ERROR: Invalid access to
+    property or key 'visible_in_tree'` y la malla nunca llega a la lista, así
+    que el test sale en verde sin detectar ningún solape. En 3D la propiedad
+    equivalente es `visible`. Hay que corregirlo y volver a pasar el test: puede
+    destapar solapes reales en las habitaciones.
 
 ## 5. ¿Cómo hay que hacerlo?
 
@@ -589,4 +700,4 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   ```
 
 ---
-*Actualizado: 2026-11-12 — Hito 10 (accesibilidad, cámara en primera persona, salas nuevas y escudo radioactivo) completado.*
+*Actualizado: 2026-11-13 — Hito 12 (suelo sin regolita, plataforma de 84 × 160 m y decorado exterior recolocado) completado.*

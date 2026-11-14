@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 ; ─────────────────────────────────────────────────────────────
 ; SALA DEL GENERADOR  (20 x 20 m)
@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="17_plant_1"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ramp_Grey.glb" id="18_ramp_grey"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hazard_Floor_1.glb" id="19_hazard_floor_1"]
+[ext_resource type="PackedScene" path="res://scenes/DoorAnim.tscn" id="20_door_anim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -275,6 +276,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, 9.6)
 
 [node name="Wall_South_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, -9.6)
+[node name="Door_South_2" parent="Walls" instance=ExtResource("20_door_anim")]
+transform = Transform3D(1.6, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, -9.6)
 
 [node name="Wall_North_3" parent="Walls" instance=ExtResource("4_wall_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0, 9.6)

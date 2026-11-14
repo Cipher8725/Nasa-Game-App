@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://og0nbl21xc76"]
+[gd_scene load_steps=34 format=3 uid="uid://og0nbl21xc76"]
 
 [ext_resource type="PackedScene" uid="uid://b11uw27ojj2s2" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Tile_Metal.glb" id="1_floor"]
 [ext_resource type="PackedScene" uid="uid://djvy7wuhgm1m3" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hazard_Floor_1.glb" id="2_hazard"]
@@ -26,16 +26,19 @@
 [ext_resource type="PackedScene" uid="uid://4yt1wmnf3dyb" path="res://scenes/rooms/room_quarters.tscn" id="25_5k81o"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_oxigeno.tscn" id="26_oxigeno"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_briefing.tscn" id="27_briefing"]
-[ext_resource type="PackedScene" path="res://scenes/rooms/room_medbay.tscn" id="28_medbay"]
+[ext_resource type="PackedScene" uid="uid://cv8al1vk6lorh" path="res://scenes/rooms/room_medbay.tscn" id="28_medbay"]
 [ext_resource type="PackedScene" path="res://scenes/rooms/room_hydroponics.tscn" id="29_hydro"]
-[ext_resource type="Script" path="res://scripts/regolith_floor.gd" id="30_regolith"]
-[ext_resource type="Material" path="res://resources/mars_ground_material.tres" id="31_mars"]
-[ext_resource type="Script" path="res://scripts/window_glass.gd" id="32_glass"]
+[ext_resource type="Script" uid="uid://b5hkk1h6r046b" path="res://scripts/regolith_floor.gd" id="30_regolith"]
+[ext_resource type="Script" uid="uid://cer8iomnvhwbx" path="res://scripts/window_glass.gd" id="32_glass"]
 [ext_resource type="Material" path="res://resources/window_glass_material.tres" id="33_glassmat"]
+[ext_resource type="PackedScene" path="res://scenes/DoorAnim.tscn" id="34_door_anim"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_mq8aq"]
+size = Vector3(100, 0.2, 96.375)
 
 [node name="StationInterior" type="Node3D" unique_id=591982817]
 script = ExtResource("30_regolith")
-floor_material = ExtResource("31_mars")
+enabled = false
 
 [node name="FloorTiles" type="Node3D" parent="." unique_id=228743797]
 
@@ -128,7 +131,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.004, -4)
 [node name="Walls" type="Node3D" parent="." unique_id=1014738766]
 script = ExtResource("32_glass")
 glass_material = ExtResource("33_glassmat")
-enabled = true
 
 [node name="Wall_Back_0" parent="Walls" unique_id=1162051074 instance=ExtResource("3_wall")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -9.6)
@@ -165,9 +167,13 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, -4)
 
 [node name="Wall_Left_2" parent="Walls" unique_id=1757820201 instance=ExtResource("5_door")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 0)
+[node name="Door_West" parent="Walls" instance=ExtResource("34_door_anim")]
+transform = Transform3D(0, 0, -1.6, 0, 2, 0, 1, 0, 0, -9.6, 1, 0)
 
 [node name="Wall_Left_5" parent="Walls" unique_id=809641709 instance=ExtResource("5_door")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.026544094, 0, 9.660257)
+[node name="Door_North" parent="Walls" instance=ExtResource("34_door_anim")]
+transform = Transform3D(-1.6, 0, 0, 0, 2, 0, 0, 0, -1, 0.026544094, 1, 9.660257)
 
 [node name="Wall_Left_3" parent="Walls" unique_id=1060086365 instance=ExtResource("3_wall")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 4)
@@ -183,6 +189,8 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, -4)
 
 [node name="Wall_Right_2" parent="Walls" unique_id=1346921228 instance=ExtResource("5_door")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 0)
+[node name="Door_East" parent="Walls" instance=ExtResource("34_door_anim")]
+transform = Transform3D(0, 0, 1.6, 0, 2, 0, -1, 0, 0, 9.6, 1, 0)
 
 [node name="Wall_Right_3" parent="Walls" unique_id=2053983934 instance=ExtResource("3_wall")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 4)
@@ -369,3 +377,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.09, 0, 88.23)
 
 [node name="RoomHydroponics" parent="." unique_id=896199044 instance=ExtResource("29_hydro")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 101.8)
+
+[node name="FalseCeiling" type="MeshInstance3D" parent="." unique_id=1431148406]
+transform = Transform3D(-0.49612787, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 1.8125)
+visible = false
+mesh = SubResource("BoxMesh_mq8aq")

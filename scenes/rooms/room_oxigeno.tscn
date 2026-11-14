@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=22 format=3]
 
 ; ─────────────────────────────────────────────────────────────
 ; SALA DE OXÃGENO  (20 x 20 m)  â€”  depuradora de aire de la estaciÃ³n
@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="14_plant_1"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Hazard_Floor_1.glb" id="15_hazard_floor_1"]
 [ext_resource type="PackedScene" path="res://scenes/console.tscn" id="16_console"]
+[ext_resource type="PackedScene" path="res://scenes/DoorAnim.tscn" id="17_door_anim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -269,6 +270,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, 9.6)
 
 [node name="Wall_South_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, -9.6)
+[node name="Door_South_2" parent="Walls" instance=ExtResource("17_door_anim")]
+transform = Transform3D(1.6, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, -9.6)
 
 [node name="Wall_North_3" parent="Walls" instance=ExtResource("4_wall_green")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0, 9.6)

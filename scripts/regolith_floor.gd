@@ -1,20 +1,22 @@
 class_name RegolithFloor
 extends Node3D
 
-## Aplica el material de regolita a todas las baldosas del suelo del hábitat.
+## Aplica un material de regolita a todas las baldosas del suelo del hábitat.
 ##
-## El pack Molten Maps modela el suelo como mallas independientes (una por
-## baldosa) con su propio material. Cambiar 25 nodos por sala sería tedioso y
-## frágil, así que este script recorre los nodos que agrupan el suelo (`Floor` y
-## `FloorTiles`) de todo el subárbol —incluidas las salas instanciadas— y les
-## asigna `floor_material` como `material_override`.
+## DESACTIVADO POR DEFECTO desde el Hito 12: el suelo del hábitat debe mostrar
+## el material original del pack Molten Maps, sin texturas de regolita lunar ni
+## marciana. En `scenes/habitat_decor.tscn` el nodo `StationInterior` lleva
+## `enabled = false`, así que este script no toca nada al arrancar.
 ##
-## El material usa proyección triplanar en espacio de mundo, de modo que la
-## textura es continua entre baldosas y entre salas.
+## Por qué existe igualmente: el pack modela el suelo como mallas independientes
+## (una por baldosa) con su propio material, de modo que cambiar 257 nodos a
+## mano sería tedioso y frágil. Si en el futuro se quiere un suelo de regolita
+## (nivel lunar o marciano), basta con asignar un material a `floor_material` y
+## poner `enabled = true` en el nodo `StationInterior`.
 ##
-## Para volver al suelo original del pack basta con desmarcar `enabled` (o
-## vaciar `floor_material`) en el nodo `StationInterior` de
-## `scenes/habitat_decor.tscn`.
+## OJO: este script sustituye el material de TODO lo que cuelga de los nodos
+## `Floor` / `FloorTiles`, incluidas las franjas de peligro (`Hazard_Floor_1`),
+## que por eso pierden su textura de rayas. Es otra razón para dejarlo apagado.
 
 ## Material que se aplica al suelo. Si es `null`, no se hace nada.
 @export var floor_material: Material

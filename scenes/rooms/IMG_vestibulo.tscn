@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cvc3lxrr5mdc"]
+[gd_scene load_steps=19 format=3 uid="uid://cvc3lxrr5mdc"]
 
 [ext_resource type="PackedScene" uid="uid://b11uw27ojj2s2" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Floor_Tile_Metal.glb" id="1_floor_tile_metal"]
 [ext_resource type="PackedScene" uid="uid://cv5cclhjgq3wn" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ceiling_Tile_Grey_Metal.glb" id="2_ceiling_tile_grey_metal"]
@@ -10,10 +10,10 @@
 [ext_resource type="PackedScene" uid="uid://c5fuc6rewy46m" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Command_Console.glb" id="8_command_console"]
 [ext_resource type="PackedScene" uid="uid://d3hesabppt0km" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Off.glb" id="9_wall_display_off"]
 [ext_resource type="PackedScene" uid="uid://bu16emg1m2unb" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Railing_Flat.glb" id="10_railing_flat"]
-[ext_resource type="PackedScene" uid="uid://h6sifxyd13ln" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Ramp_Grey.glb" id="11_ramp_grey"]
 [ext_resource type="PackedScene" uid="uid://bcm0ecaa35w2g" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="12_plant_1"]
 [ext_resource type="PackedScene" uid="uid://ds3lui4vkxm5g" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Chair_1.glb" id="13_chair_1"]
 [ext_resource type="PackedScene" uid="uid://d1vr36ri1ecl4" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Battery_Green.glb" id="14_battery_green"]
+[ext_resource type="PackedScene" path="res://scenes/DoorAnim.tscn" id="15_door_anim"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -62,7 +62,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 4)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 8)
 
 [node name="Tile_10" parent="Floor" unique_id=548990775 instance=ExtResource("1_floor_tile_metal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0035792887, 0.0026510358, -8.002817)
 
 [node name="Tile_11" parent="Floor" unique_id=1745906484 instance=ExtResource("1_floor_tile_metal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
@@ -250,9 +250,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.6)
 
 [node name="Wall_South_2" parent="Walls" unique_id=322190680 instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.6)
-
-[node name="Wall_South_5" parent="Walls" unique_id=809641709 instance=ExtResource("5_wall_with_door_grey")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.562254, 1.1920929e-07, 4.0558186)
+[node name="Door_South_2" parent="Walls" instance=ExtResource("15_door_anim")]
+transform = Transform3D(1.6, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, -9.6)
 
 [node name="Wall_North_3" parent="Walls" unique_id=1152378096 instance=ExtResource("4_wall_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 9.6)
@@ -278,9 +277,10 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, -4)
 [node name="Wall_West_1" parent="Walls" unique_id=265096319 instance=ExtResource("4_wall_grey")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, -4)
 
-; Puerta hacia el pasillo sur (conecta con la sala de mando).
 [node name="Wall_East_2" parent="Walls" unique_id=1230675042 instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 0)
+[node name="Door_East_2" parent="Walls" instance=ExtResource("15_door_anim")]
+transform = Transform3D(0, 0, 1.6, 0, 2, 0, -1, 0, 0, 9.6, 1, 0)
 
 [node name="Wall_West_2" parent="Walls" unique_id=483309643 instance=ExtResource("4_wall_grey")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 0)
@@ -290,6 +290,9 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 4)
 
 [node name="Wall_East_4" parent="Walls" unique_id=1496412043 instance=ExtResource("6_wall_glass_clear")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 8)
+
+[node name="Wall_East_5" parent="Walls" unique_id=464633891 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 9.6, 0, 4.023317)
 
 [node name="Wall_West_4" parent="Walls" unique_id=1799537662 instance=ExtResource("4_wall_grey")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -9.6, 0, 8)
@@ -306,10 +309,7 @@ transform = Transform3D(0.45, 0, 0, 0, 0.45, 0, 0, 0, 0.45, -4, 0, -6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.15)
 
 [node name="Railing" parent="Props" unique_id=1200272990 instance=ExtResource("10_railing_flat")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 8.8, 0, 0)
-
-[node name="ServiceStairs" parent="Props" unique_id=397023155 instance=ExtResource("11_ramp_grey")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 11.97, 0, 0)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 8.8, 0, -3.6593227)
 
 [node name="Plant_0" parent="Props" unique_id=1619000252 instance=ExtResource("12_plant_1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
@@ -416,12 +416,11 @@ shape = SubResource("BoxShape3D_wall_z")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, -4)
 shape = SubResource("BoxShape3D_wall_z")
 
-; La puerta del este se parte en dos tramos para dejar el hueco libre.
 [node name="Wall_East_2_a" type="CollisionShape3D" parent="Collision" unique_id=684357036]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, -1.4)
 shape = SubResource("BoxShape3D_door")
 
-[node name="Wall_East_2_b" type="CollisionShape3D" parent="Collision"]
+[node name="Wall_East_2_b" type="CollisionShape3D" parent="Collision" unique_id=547212959]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 1.4)
 shape = SubResource("BoxShape3D_door")
 
@@ -439,6 +438,10 @@ shape = SubResource("BoxShape3D_wall_z")
 
 [node name="Wall_East_4" type="CollisionShape3D" parent="Collision" unique_id=2072640978]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 8)
+shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Wall_East_5" type="CollisionShape3D" parent="Collision" unique_id=797272027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.6, 2, 4.012833)
 shape = SubResource("BoxShape3D_wall_z")
 
 [node name="Wall_West_4" type="CollisionShape3D" parent="Collision" unique_id=678470654]
