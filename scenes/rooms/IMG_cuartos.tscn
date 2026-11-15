@@ -22,7 +22,7 @@
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Display_Off.glb" id="12_wall_display_off"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Wall_Light_White.glb" id="13_wall_light_white"]
 [ext_resource type="PackedScene" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Plant_1.glb" id="14_plant_1"]
-[ext_resource type="PackedScene" path="res://scenes/DoorAnim.tscn" id="15_door_anim"]
+[ext_resource type="PackedScene" path="res://scenes/doors/auto_door.tscn" id="16_auto_door"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -265,9 +265,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, 9.6)
 
 [node name="Wall_South_2" parent="Walls" instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, -9.6)
-[node name="Door_South_2" parent="Walls" instance=ExtResource("15_door_anim")]
-transform = Transform3D(1.6, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, -9.6)
-
+[node name="Door_South_2" parent="Walls" instance=ExtResource("16_auto_door")]
+transform = Transform3D(1.145, 0, 0, 0, 1.369, 0, 0, 0, 1, 0.0, 0, -9.6)
 [node name="Wall_North_3" parent="Walls" instance=ExtResource("4_wall_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0, 9.6)
 

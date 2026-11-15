@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dsm7gg42kclnd" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/End_Table.glb" id="12_end_table"]
 [ext_resource type="PackedScene" uid="uid://b06k162bp6a5r" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Table_Light.glb" id="13_table_light"]
 [ext_resource type="PackedScene" uid="uid://ds3lui4vkxm5g" path="res://assets/Molten Maps SciFi Asset Pack/Assets/gtlf/Chair_1.glb" id="14_chair_1"]
-[ext_resource type="PackedScene" path="res://scenes/DoorAnim.tscn" id="15_door_anim"]
+[ext_resource type="PackedScene" path="res://scenes/doors/auto_door.tscn" id="16_auto_door"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(20, 0.4, 20)
@@ -157,30 +157,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 4)
 [node name="Tile_24" parent="Ceiling" unique_id=648679643 instance=ExtResource("2_ceiling_tile_grey_metal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
 
-[node name="Lamp_2" parent="Ceiling" unique_id=1936327674 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 3.66, 0)
-
-[node name="Lamp_6" parent="Ceiling" unique_id=750134340 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.66, -4)
-
-[node name="Lamp_8" parent="Ceiling" unique_id=2061018683 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.66, 4)
-
-[node name="Lamp_10" parent="Ceiling" unique_id=1226634896 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.66, -8)
-
-[node name="Lamp_14" parent="Ceiling" unique_id=1305572757 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.66, 8)
-
-[node name="Lamp_16" parent="Ceiling" unique_id=1350487146 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3.66, -4)
-
-[node name="Lamp_18" parent="Ceiling" unique_id=1710839895 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3.66, 4)
-
-[node name="Lamp_22" parent="Ceiling" unique_id=1486388176 instance=ExtResource("3_ceiling_light")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3.66, 0)
-
 [node name="Lights" type="Node3D" parent="." unique_id=1432220137]
 
 [node name="Light_0" type="OmniLight3D" parent="Lights" unique_id=30482002]
@@ -250,9 +226,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.6)
 
 [node name="Wall_South_2" parent="Walls" unique_id=1389059331 instance=ExtResource("5_wall_with_door_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9.6)
-[node name="Door_South_2" parent="Walls" instance=ExtResource("15_door_anim")]
-transform = Transform3D(1.6, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, -9.6)
 
+[node name="Door_South_2" parent="Walls" instance=ExtResource("16_auto_door")]
+transform = Transform3D(1.145, 0, 0, 0, 1.369, 0, 0, 0, 1, 0, 0, -9.6)
 [node name="Wall_North_3" parent="Walls" unique_id=1448855342 instance=ExtResource("4_wall_grey")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 9.6)
 
@@ -424,3 +400,51 @@ shape = SubResource("BoxShape3D_wall_z")
 [node name="Wall_West_4" type="CollisionShape3D" parent="Collision" unique_id=35227563]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.6, 2, 8)
 shape = SubResource("BoxShape3D_wall_z")
+
+[node name="Lamp_18" parent="." unique_id=1718804231 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, 4, 3.66, 4)
+
+[node name="Lamp_21" parent="." unique_id=561041754 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, -0.11241865, 3.66, 8.0260725)
+
+[node name="Lamp_22" parent="." unique_id=253998060 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, -4.1335545, 3.66, 4.0584335)
+
+[node name="Lamp_23" parent="." unique_id=1327383176 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, -7.929615, 3.66, -0.035593987)
+
+[node name="Lamp_24" parent="." unique_id=1447203754 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, -4.17977, 3.66, -3.986158)
+
+[node name="Lamp_25" parent="." unique_id=534647025 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, -0.1542654, 3.66, -7.9165235)
+
+[node name="Lamp_19" parent="." unique_id=63724501 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, 4, 3.66, -4.055893)
+
+[node name="Lamp_20" parent="." unique_id=1489284115 instance=ExtResource("3_ceiling_light")]
+transform = Transform3D(0.42247787, 0, 0, 0, 1, 0, 0, 0, 0.4333002, 7.7445984, 3.66, 0.0543499)
+
+[node name="Wall_East_3" parent="." unique_id=464633891 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, 1.9246273, 3.8268428, 3.9488163)
+
+[node name="Wall_East_6" parent="." unique_id=219156173 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, -2.1877913, 3.8268428, 7.974889)
+
+[node name="Wall_East_7" parent="." unique_id=125766815 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, -6.208927, 3.8268428, 4.00725)
+
+[node name="Wall_East_8" parent="." unique_id=2042052717 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, -10.004988, 3.8268428, -0.08677769)
+
+[node name="Wall_East_9" parent="." unique_id=115321279 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, -6.2551427, 3.8268428, -4.0373416)
+
+[node name="Wall_East_10" parent="." unique_id=723851216 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, -2.229638, 3.8268428, -7.967707)
+
+[node name="Wall_East_4" parent="." unique_id=1087969089 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, 1.9246273, 3.8268428, -4.1070766)
+
+[node name="Wall_East_5" parent="." unique_id=995498390 instance=ExtResource("6_wall_glass_clear")]
+transform = Transform3D(-4.645693e-08, 1.0998092, -4.371139e-08, 0, -4.8074185e-08, -1, -1.0628107, -4.8074185e-08, 1.9106855e-15, 5.6692257, 3.8268428, 0.0031661987)

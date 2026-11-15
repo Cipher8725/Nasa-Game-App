@@ -165,3 +165,64 @@ $godot = "H:\Godot V4.7.2\Godot_v4.7.2-stable_win64_console.exe"
 
 Los `.glb` de Molten Maps llevan su PNG en la misma carpeta; mantenerlos
 juntos evita avisos de UID y materiales sin textura.
+
+## Rover Perseverance (Taller del Rover)
+
+`ai_assets/models/perseverance/` contiene el modelo 3D **oficial** de la NASA
+(NASA 3D Resources, NASA/JPL-Caltech) dividido en 16 piezas para el entrenamiento
+de ensamblaje (`scenes/rover_workshop.tscn`). No es geometría generada por
+IA. El original venía con compresión Draco, que Godot no abre; se exportó de nuevo
+sin Draco. Procedencia, pasos y fuentes de los textos: `ai_assets/models/perseverance/CREDITOS.md`.
+
+- `ai_assets/models/perseverance/ruedas/`: las 6 ruedas como archivos sueltos
+  (`rueda_izq_delantera.glb` … `rueda_der_trasera.glb`), centradas en su eje, con
+  sus posiciones en `ruedas.json`. Salen del mismo modelo oficial.
+- `piezas_perseverance.json` incluye por pieza `material` (de qué está hecha) e
+  `importancia` (por qué es importante), y una lista `instrumentos` con los
+  instrumentos de cada pieza. Todo con fuentes en `fuentes_materiales`; cuando la
+  NASA no publica el material, el texto lo dice. Para regenerar el recurso del
+  juego después de editar el JSON se vuelve a crear `resources/rover_perseverance.tres`.
+
+## Puertas y carnet
+
+- `ai_assets/models/puerta/puerta_scifi.glb` (puerta automática), `puerta_restringida.glb`
+  (marco rojo, franja de peligro y letrero) y `lector_carnet.glb` (lector de pared).
+  Modelados en Blender a partir de una imagen de referencia del equipo; no se usó IA
+  generativa. Muy livianos (unos cientos de triángulos cada uno).
+- `ai_assets/textures/avatares/avatar_1.png` … `avatar_6.png`: fotos de carnet
+  dibujadas desde cero con Python (Pillow). No son fotos de personas reales.
+- Escenas: `scenes/doors/auto_door.tscn`, `scenes/doors/restricted_door.tscn`,
+  `scenes/doors_demo.tscn` (sala de prueba), `scenes/card_editor.tscn` (MI CARNET) y
+  `scenes/ui/astronaut_card_view.tscn` (el carnet).
+- **Tamaño ajustable:** `SlidingDoor` es `@tool`. En el Inspector, grupo
+  "Tamaño (ajustable)": `door_width`, `door_height`, `door_depth`, `slide_direction`
+  (UP / LEFT / RIGHT para techos bajos). Escala el modelo y ajusta colisiones,
+  áreas, letrero y lector. Las formas de colisión son `resource_local_to_scene`,
+  así que cada puerta tiene las suyas.
+- `tools/blender/puerta_parametrica_blender.py`: crea puertas a medida en Blender
+  (los postes mantienen su grosor). Ejemplos en `ai_assets/models/puerta/a_medida/`.
+- **Foto del carnet:** `scenes/ui/photo_booth.tscn` (cabina con cámara, cuenta 3-2-1,
+  casco opcional y SUBIR UNA FOTO), `scripts/photo_tools.gd` y
+  `ai_assets/textures/carnet/casco_overlay.png` (casco dibujado con Pillow). La foto
+  se guarda solo en `user://carnet_foto.png`; nunca se sube a internet.
+
+## Paquete "Nasa Space 2" (menú, biblioteca, lector y Apolo 8)
+
+- `ai_assets/ui/menu/`: botones del menú con texto e iconos (recortes de la
+  maqueta del equipo) y sus variantes `_hover`, `_pressed`, `_disabled`
+  (generadas con Pillow ajustando brillo/color), fondo, panel y encabezado.
+- `ai_assets/ui/biblioteca/`: fondo de la estantería 1280 × 720, 9 portadas
+  (`portadas/<id>.png`), botón volver y etiqueta de nivel.
+- `ai_assets/ui/lector/`: fondo de la sala, libro abierto, botones (normal,
+  hover, pressed, disabled; se usan como `StyleBoxTexture` con texto encima),
+  iconos y los diagramas del cohete y la órbita.
+- `ai_assets/apolo8/cabina_*.png`: las 4 vistas de la cabina del módulo de mando
+  CM-103 con el vidrio de las ventanas vuelto transparente (máscaras trazadas a
+  mano) para ver el cielo de la simulación. Las imágenes originales mostraban la
+  Luna por la ventana, lo que no corresponde a un despegue.
+- `ai_assets/apolo8/etapas/`: el Saturno V del paquete recortado en torre de
+  escape, cápsula, adaptador SLA, S-IVB, S-II y S-IC, con fondo transparente.
+- Textos de la biblioteca: `resources/biblioteca/catalogo.json` (del paquete,
+  con fuentes de la NASA). Datos del despegue: `resources/apolo8/ascenso.json`.
+- Las ilustraciones del paquete son conceptuales (según su LEEME); los datos
+  numéricos de la simulación son reales.

@@ -428,6 +428,77 @@ sistemas.
   hábitat las 20 puertas montadas abren y cierran con el jugador cerca/lejos.
   Suite de 9 pruebas en verde.
 
+### Hito 15 — Taller del Rover, puertas a medida y carnet con foto (2026-11-14, rama `feat/rover-puertas-carnet`)
+
+- **Taller del Rover** (`scenes/rover_workshop.tscn`, `scripts/rover_workshop.gd`):
+  ensamblaje del Perseverance (modelo oficial NASA 3D Resources dividido en 16
+  piezas, `ai_assets/models/perseverance/`). Modos guiado y evaluación; la
+  evaluación con 2+ estrellas sube el carnet a nivel 2. Datos de cada pieza
+  (material, importancia, instrumentos, fuentes) en `piezas_perseverance.json`
+  → `resources/rover_perseverance.tres`. Las 6 ruedas también sueltas en `ruedas/`.
+- **Puertas corredizas** `SlidingDoor` (`scenes/doors/auto_door.tscn` y
+  `restricted_door.tscn`, distintas de `DoorAnim`): `@tool`, tamaño ajustable en
+  el Inspector (ancho/alto/grosor, apertura arriba o de lado). La restringida pide
+  carnet de nivel 2 en el lector (tecla E). Script de Blender a medida en
+  `tools/blender/`.
+- **Carnet** (`AstronautCard`, `scenes/card_editor.tscn`): avatar o foto real
+  (cabina con cámara `CameraServer`, cuenta 3-2-1, casco opcional, o subir foto).
+  Foto solo en `user://carnet_foto.png`.
+- Pruebas: `doors_test`, `rover_workshop_test`.
+
+### Hito 16 — Menú "Nasa Space 2", Biblioteca y Simulación de despegue (2026-11-14)
+
+- **Menú nuevo** con los sprites del paquete "Nasa Space 2"
+  (`ai_assets/ui/menu/`, posiciones en `resources/menu_posiciones_1280x720.json`):
+  JUGAR (abre el panel "Menú de juego"), BIBLIOTECA, SALIR y "Mi carnet".
+  Panel: Base lunar (`main.tscn`), Armado del rover (taller), Simulación de
+  despegue y Exploración lunar (desactivada, "Próximamente": `LEVEL_EXPLORATION = ""`).
+  Todo dentro de `%Screen` (1280 × 720 centrado). Botones = `TextureButton` con
+  variantes hover/pressed/disabled generadas a partir del PNG.
+- **Biblioteca** (`scenes/biblioteca.tscn`, `scripts/library.gd`, `class_name Library`):
+  9 libros (Básico / Intermedio / Avanzado) desde `resources/biblioteca/catalogo.json`,
+  creados a partir de `%BookTemplate` en las posiciones de la maqueta. Lector de
+  libro abierto: 3 dobles páginas (portada | pág. 1, pág. 2 | pág. 3, fuentes | fin),
+  Anterior/Siguiente, flechas del teclado y Escape. Al terminar algunos libros
+  ofrecen "Practicar" (rover → taller, despegue → simulación).
+- **Simulación de despegue del Apolo 8** (`scenes/simulacion_despegue.tscn`,
+  `scripts/launch_simulation.gd`, `class_name LaunchSimulation`): cabina con 4
+  vistas (Q/E o flechas), ventanas transparentes (`ai_assets/apolo8/cabina_*.png`)
+  con el cielo de `resources/shaders/cielo_despegue.gdshader` detrás (tapadas
+  hasta soltar la torre de escape; azul → negro → estrellas → borde de la Tierra).
+  Saturno V por piezas (`ai_assets/apolo8/etapas/`) que se sueltan. Altura,
+  velocidad y horas de cada maniobra reales de la tabla de ascenso NASA SP-4029
+  (`resources/apolo8/ascenso.json`). El reloj espera la orden del jugador en cada
+  maniobra; si tarda más de `late_limit_real` la "computadora" la hace (error).
+  Estrellas por errores. `step(delta)` permite probar sin tiempo real.
+- Pruebas nuevas: `library_test`, `launch_simulation_test`; `menu_test` reescrito.
+
+### Hito 17 — Simulación de despegue en 3D y paquete "Nasa Space 2" completo (2026-11-14)
+
+- **Despegue 3D** (`scenes/simulacion_despegue_3d.tscn`, `scripts/launch_simulation_3d.gd`,
+  `class_name LaunchSimulation3D extends LaunchSimulation`): reutiliza toda la lógica
+  y la interfaz de la versión 2D (reloj, maniobras, errores, estrellas, telemetría
+  real) mediante ganchos (`_update_visuals`, `_on_stage_dropped`, `_on_reset`,
+  `_on_stage_jolt`, `_set_view`). El menú abre esta versión; la 2D sigue en
+  `MainMenu.LAUNCH_SCENE_2D`.
+- **Mundo 3D**: el cohete queda en el origen y el mundo se mueve. `%EarthPivot`
+  baja `R + 7,6 m + altura real` y gira `alcance/R` (alcance real de SP-4029).
+  Cohete vertical hasta 12 s y luego inclinado según `inclinacion_deg` (aproximada).
+  Saturno V oficial (NASA 3D Resources) en 6 piezas a escala real
+  (`ai_assets/models/saturno_v/`); al soltarse cada pieza se `reparent` a `%World`
+  y cae. Fuego (`fuego_motor.gdshader`, conos aditivos) solo en la etapa que empuja;
+  la S-IC se enciende a T−6,6 s. Humo `CPUParticles3D` con `local_coords`.
+- **Cámaras**: exterior (`%ExteriorPivot`, arrastrar con el ratón, rueda = zoom) y
+  cabina (`%CockpitCamera`, tecla C). **Importante (renderer gl_compatibility):**
+  con `far` = 20 000 km no se dibuja nada; se usa `far = 4 000 000` y `near = 0.5`.
+- **Cabina 3D**: 4 `QuadMesh` con `panel_cabina.gdshader` y las fotos del paquete;
+  el vidrio transparente deja ver el mundo 3D; `covered` tapa las ventanas hasta
+  soltar la torre de escape.
+- **Paquete completo**: originales en `ai_assets/nasa_space_2/` y guía archivo por
+  archivo en `docs/GUIA_NASA_SPACE_2.md`. Textos de los libros en
+  `resources/biblioteca/libros/*.md`.
+- Prueba nueva: `launch_simulation_3d_test`.
+
 ## 3. ¿Cómo se hizo?
 
 
@@ -532,6 +603,10 @@ código, un contador `get_applied_*_count()` para las pruebas y un `print` únic
 ### 4. ¿Qué hay que hacer?
 
 ### Pendiente inmediato (siguiente hito)
+
+0. **Exploración lunar**: crear su escena y asignarla en `MainMenu.LEVEL_EXPLORATION`
+   (el botón se activa solo). **Probar la cámara del carnet** en el equipo de la
+   demo (Windows); si no hay cámara, queda "Subir una foto".
 
 1. ~~**Textura del cubo de la estación**~~ → **resuelto en el Hito 12**: el
    bloque base usa un material sólido sin texturas
@@ -699,5 +774,12 @@ funciona, la ruta de la herramienta debe ser **relativa** (`.`), porque concaten
   # comprobar que llegan las skills, los .uid y los assets (LFS)
   ```
 
+### Hito 18 — Escala uniforme de puertas AutoDoor (2026-11-14)
+
+- Todas las puertas `AutoDoor` en las 17 habitaciones de `scenes/rooms/` han sido escaladas a **X: 1.145, Y: 1.369, Z: 1.0**, coincidiendo con la escala de referencia de `IMG_sala_del_generador.tscn`.
+- Se modificaron **20 puertas** en 16 escenas (`IMG_sala_de_mando`, `IMG_cuartos`, `IMG_criotanque`, `IMG_enfermeria`, `IMG_sala_del_orrery`, `room_cafeteria`, `room_briefing`, `IMG_vestibulo`, `room_storage`, `IMG_sala_de_reuniones`, `room_hydroponics`, `room_medbay`, `room_generator`, `room_oxigeno`, `room_control`, `room_quarters`).
+- Las 4 puertas con rotación (puertas en paredes este/oeste/norte: `room_briefing` Door_West_2, `IMG_vestibulo` Door_East_2, `room_medbay` Door_East_2, `room_quarters` Door_South_5 y Door_South_6) mantuvieron su rotación aplicando la escala sobre la matriz de rotación existente.
+- No se modificó ningún otro nodo ni propiedad.
+
 ---
-*Actualizado: 2026-11-13 — Hito 12 (suelo sin regolita, plataforma de 84 × 160 m y decorado exterior recolocado) completado.*
+*Actualizado: 2026-11-14 — Hito 18 (escala uniforme de puertas AutoDoor) completado.*
